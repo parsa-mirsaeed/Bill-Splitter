@@ -164,6 +164,27 @@
             border-radius: 5px;
             font-size: 16px;
         }
+        
+        .currency-selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        
+        .currency-option {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .currency-option.selected {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
     </style>
 </head>
 <body>
@@ -177,6 +198,15 @@
                 <label for="unitCount">تعداد واحدهای ساختمان:</label>
                 <input type="number" id="unitCount" min="1" placeholder="مثال: 10">
             </div>
+            
+            <div class="form-group">
+                <label>واحد پول:</label>
+                <div class="currency-selector">
+                    <div class="currency-option selected" data-currency="تومان">تومان</div>
+                    <div class="currency-option" data-currency="ریال">ریال</div>
+                </div>
+            </div>
+            
             <button id="nextToStep2">ادامه</button>
         </div>
         
@@ -200,8 +230,14 @@
             </div>
             
             <div class="form-group">
-                <label for="sectionAmount">مبلغ کل (تومان):</label>
-                <input type="number" id="sectionAmount" min="0" placeholder="مبلغ">
+                <label for="sectionAmount">مبلغ کل:</label>
+                <div style="position: relative;">
+                    <input type="text" id="sectionAmount" placeholder="مبلغ" 
+                           style="padding-right: 40px;">
+                    <span id="currencyIndicator" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                        تومان
+                    </span>
+                </div>
             </div>
             <div class="form-group">
                 <label for="sectionImage">افزودن تصویر پرداخت (اختیاری):</label>
@@ -236,7 +272,8 @@
         const state = {
             unitCount: 0,
             sections: [],
-            currentImage: null
+            currentImage: null,
+            currency: 'تومان'  // Default currency
         };
         
         // DOM elements
@@ -269,6 +306,7 @@
         // Step 2: Add sections
         document.getElementById('addSection').addEventListener('click', () => {
             const name = document.getElementById('sectionName').value.trim();
+            const amountInput = document.getElementById('sectionAmount').value;
             const amount = parseFloat(document.getElementById('sectionAmount').value);
             
             if (!name || isNaN(amount) || amount <= 0) {
@@ -288,7 +326,7 @@
             listItem.className = 'section-item';
             listItem.innerHTML = `
                 <div>
-                    <strong>${name}</strong>: ${amount.toLocaleString('fa-IR')} تومان
+                    <strong>${name}</strong>: ${formatCurrency(amount)}
                     ${state.currentImage ? '<span style="margin-right:10px">📷</span>' : ''}
                 </div>
             `;
@@ -360,8 +398,8 @@
                 tableHTML += `
                     <tr>
                         <td>${section.name}</td>
-                        <td>${section.amount.toLocaleString('fa-IR')}</td>
-                        <td>${perUnit.toLocaleString('fa-IR', { maximumFractionDigits: 0 })}</td>
+                        <td>${formatCurrency(section.amount)}</td>
+                        <td>${formatCurrency(perUnit)}</td>
                     </tr>
                 `;
                 
@@ -371,7 +409,7 @@
             tableHTML += `
                     </tbody>
                 </table>
-                <h3>مجموع هر واحد: <span class="unit-total">${totalPerUnit.toLocaleString('fa-IR', { maximumFractionDigits: 0 })} تومان</span></h3>
+                <h3>مجموع هر واحد: <span class="unit-total">${formatCurrency(totalPerUnit)}</span></h3>
             `;
             
             // Add images if any
@@ -408,6 +446,13 @@
             document.getElementById('sectionAmount').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') document.getElementById('addSection').click();
             });
+            
+            // Currency selection
+            document.querySelectorAll('.currency-option').forEach(option => {
+                option.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') option.click();
+                });
+            });
         }
         
         // Section type selection
@@ -420,6 +465,27 @@
                 document.getElementById('sectionName').value = this.value;
             }
         });
+        
+        // Currency selection
+        document.querySelectorAll('.currency-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.currency-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                state.currency = this.dataset.currency;
+            });
+        });
+        
+        // Format numbers with thousands separator
+        function formatNumber(num) {
+            return num.toLocaleString('fa-IR');
+        }
+        
+        // Format currency with proper symbol
+        function formatCurrency(amount) {
+            return `${formatNumber(amount)} ${state.currency}`;
+        }
         
         // Initialize after DOM load
         document.addEventListener('DOMContentLoaded', () => {
