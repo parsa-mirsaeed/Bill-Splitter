@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقسیم‌کننده قبض ساختمان</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 20px;
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        .step {
+            display: none;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        input, button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: #95a5a6;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn-container button {
+            flex: 1;
+        }
+        
+        .section-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .section-item {
+            background: #f8f9fa;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .summary-table th, .summary-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .summary-table th {
+            background-color: #f2f2f2;
+        }
+        
+        .unit-total {
+            font-weight: bold;
+            color: #27ae60;
+        }
+        
+        .print-btn {
+            background-color: #27ae60;
+        }
+        
+        .print-btn:hover {
+            background-color: #219653;
+        }
+        
+        @media print {
+            .no-print {
+                display: none;
+            }
+            
+            body {
+                padding: 0;
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 0;
+            }
+        }
+        
+        .section-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>سیستم تقسیم هزینه‌های ساختمان</h1>
+        
+        <!-- Step 1: Number of Units -->
+        <div id="step1" class="step active">
+            <h2>تعداد واحدها</h2>
+            <div class="form-group">
+                <label for="unitCount">تعداد واحدهای ساختمان:</label>
+                <input type="number" id="unitCount" min="1" placeholder="مثال: 10">
+            </div>
+            <button id="nextToStep2">ادامه</button>
+        </div>
+        
+        <!-- Step 2: Add Sections -->
+        <div id="step2" class="step">
+            <h2>افزودن بخش‌های هزینه</h2>
+            <div class="form-group">
+                <label for="sectionType">نوع قبض:</label>
+                <select id="sectionType" class="section-select">
+                    <option value="">-- انتخاب کنید --</option>
+                    <option value="قبض آب">قبض آب</option>
+                    <option value="قبض برق">قبض برق</option>
+                    <option value="قبض گاز">قبض گاز</option>
+                    <option value="other">سایر</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="customSectionGroup" style="display: none;">
+                <label for="sectionName">نام بخش:</label>
+                <input type="text" id="sectionName" placeholder="نام بخش">
+            </div>
+            
+            <div class="form-group">
+                <label for="sectionAmount">مبلغ کل (تومان):</label>
+                <input type="number" id="sectionAmount" min="0" placeholder="مبلغ">
+            </div>
+            <div class="form-group">
+                <label for="sectionImage">افزودن تصویر پرداخت (اختیاری):</label>
+                <input type="file" id="sectionImage" accept="image/*">
+                <img id="imagePreview" class="image-preview" alt="پیش‌نمایش تصویر">
+            </div>
+            <button id="addSection">افزودن بخش</button>
+            
+            <h3>بخش‌های اضافه شده:</h3>
+            <ul id="sectionList" class="section-list"></ul>
+            
+            <div class="btn-container">
+                <button class="btn-secondary" id="backToStep1">بازگشت</button>
+                <button id="nextToStep3">ادامه به محاسبه</button>
+            </div>
+        </div>
+        
+        <!-- Step 3: Review and Calculate -->
+        <div id="step3" class="step">
+            <h2>محاسبه و گزارش</h2>
+            <div id="summaryContainer"></div>
+            
+            <div class="btn-container">
+                <button class="btn-secondary" id="backToStep2">بازگشت</button>
+                <button id="printReport" class="print-btn">چاپ گزارش</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application state
+        const state = {
+            unitCount: 0,
+            sections: [],
+            currentImage: null
+        };
+        
+        // DOM elements
+        const steps = {
+            step1: document.getElementById('step1'),
+            step2: document.getElementById('step2'),
+            step3: document.getElementById('step3')
+        };
+        
+        // Navigation functions
+        function showStep(stepId) {
+            Object.values(steps).forEach(step => {
+                step.classList.remove('active');
+            });
+            document.getElementById(stepId).classList.add('active');
+        }
+        
+        // Step 1: Set unit count
+        document.getElementById('nextToStep2').addEventListener('click', () => {
+            const unitCount = parseInt(document.getElementById('unitCount').value);
+            if (isNaN(unitCount) || unitCount <= 0) {
+                alert('لطفاً تعداد واحدهای معتبر وارد کنید');
+                return;
+            }
+            
+            state.unitCount = unitCount;
+            showStep('step2');
+        });
+        
+        // Step 2: Add sections
+        document.getElementById('addSection').addEventListener('click', () => {
+            const name = document.getElementById('sectionName').value.trim();
+            const amount = parseFloat(document.getElementById('sectionAmount').value);
+            
+            if (!name || isNaN(amount) || amount <= 0) {
+                alert('لطفاً نام و مبلغ معتبر وارد کنید');
+                return;
+            }
+            
+            // Add section to state WITH image
+            state.sections.push({
+                name,
+                amount,
+                image: state.currentImage  // Preserve the image
+            });
+            
+            // Add to UI list with image indicator
+            const listItem = document.createElement('li');
+            listItem.className = 'section-item';
+            listItem.innerHTML = `
+                <div>
+                    <strong>${name}</strong>: ${amount.toLocaleString('fa-IR')} تومان
+                    ${state.currentImage ? '<span style="margin-right:10px">📷</span>' : ''}
+                </div>
+            `;
+            document.getElementById('sectionList').appendChild(listItem);
+            
+            // Clear inputs but KEEP image preview
+            document.getElementById('sectionName').value = '';
+            document.getElementById('sectionAmount').value = '';
+            document.getElementById('sectionImage').value = '';
+            
+            // Reset current image for next section
+            state.currentImage = null;
+            document.getElementById('imagePreview').style.display = 'none';
+        });
+        
+        // Image preview
+        document.getElementById('sectionImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = document.getElementById('imagePreview');
+                img.src = event.target.result;
+                img.style.display = 'block';
+                state.currentImage = event.target.result;  // Store image data
+            };
+            reader.readAsDataURL(file);
+        });
+        
+        // Step 2 navigation
+        document.getElementById('backToStep1').addEventListener('click', () => showStep('step1'));
+        document.getElementById('nextToStep3').addEventListener('click', () => {
+            if (state.sections.length === 0) {
+                alert('لطفاً حداقل یک بخش اضافه کنید');
+                return;
+            }
+            generateSummary();
+            showStep('step3');
+        });
+        
+        // Step 3: Generate summary
+        function generateSummary() {
+            const container = document.getElementById('summaryContainer');
+            container.innerHTML = '';
+            
+            // Create summary table
+            let tableHTML = `
+                <h3>خلاصه هزینه‌ها</h3>
+                <p>تعداد واحدها: <strong>${state.unitCount}</strong></p>
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>نام بخش</th>
+                            <th>مبلغ کل (تومان)</th>
+                            <th>هر واحد (تومان)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            let totalPerUnit = 0;
+            let hasImages = false;
+            
+            state.sections.forEach(section => {
+                const perUnit = section.amount / state.unitCount;
+                totalPerUnit += perUnit;
+                
+                tableHTML += `
+                    <tr>
+                        <td>${section.name}</td>
+                        <td>${section.amount.toLocaleString('fa-IR')}</td>
+                        <td>${perUnit.toLocaleString('fa-IR', { maximumFractionDigits: 0 })}</td>
+                    </tr>
+                `;
+                
+                if (section.image) hasImages = true;
+            });
+            
+            tableHTML += `
+                    </tbody>
+                </table>
+                <h3>مجموع هر واحد: <span class="unit-total">${totalPerUnit.toLocaleString('fa-IR', { maximumFractionDigits: 0 })} تومان</span></h3>
+            `;
+            
+            // Add images if any
+            if (hasImages) {
+                tableHTML += `<h3>تصاویر پرداخت:</h3><div style="page-break-inside: avoid;">`;
+                state.sections.forEach(section => {
+                    if (section.image) {
+                        tableHTML += `
+                            <div style="margin-bottom: 20px;">
+                                <div><strong>${section.name}</strong></div>
+                                <img src="${section.image}" style="max-width: 100%; max-height: 300px; display: block; margin-top: 10px;">
+                            </div>
+                        `;
+                    }
+                });
+                tableHTML += `</div>`;
+            }
+            
+            container.innerHTML = tableHTML;
+        }
+        
+        // Step 3 navigation
+        document.getElementById('backToStep2').addEventListener('click', () => showStep('step2'));
+        document.getElementById('printReport').addEventListener('click', () => window.print());
+        
+        // Enter key navigation
+        function setupEnterNavigation() {
+            // Unit count field
+            document.getElementById('unitCount').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') document.getElementById('nextToStep2').click();
+            });
+            
+            // Section fields
+            document.getElementById('sectionAmount').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') document.getElementById('addSection').click();
+            });
+        }
+        
+        // Section type selection
+        document.getElementById('sectionType').addEventListener('change', function() {
+            const customGroup = document.getElementById('customSectionGroup');
+            if (this.value === 'other') {
+                customGroup.style.display = 'block';
+            } else {
+                customGroup.style.display = 'none';
+                document.getElementById('sectionName').value = this.value;
+            }
+        });
+        
+        // Initialize after DOM load
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEnterNavigation();
+        });
+    </script>
+</body>
+</html>
