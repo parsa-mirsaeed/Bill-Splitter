@@ -123,14 +123,45 @@
                 display: none;
             }
             
+            .status-bar {
+                display: none !important;
+            }
+            
             body {
                 padding: 0;
                 background: white;
+                zoom: 90%;
+                width: 100%;
             }
             
             .container {
                 box-shadow: none;
-                padding: 0;
+                padding: 10px;
+                margin: 0;
+                width: 100%;
+                max-width: 100%;
+            }
+            
+            h1 {
+                font-size: 24px;
+                margin-top: 5px;
+                margin-bottom: 15px;
+            }
+            
+            h2 {
+                font-size: 20px;
+            }
+            
+            .calculation-container, .payment-details, .final-message {
+                page-break-inside: avoid;
+            }
+            
+            .bill-image-container {
+                max-height: 250px !important;
+            }
+            
+            .btn-container {
+                display: none;
             }
         }
         
@@ -171,7 +202,7 @@
         }
         
         .calculation-result {
-            font-family: monospace;
+            font-family: Tahoma, sans-serif;
             font-size: 18px;
             color: #2c3e50;
             direction: ltr;
@@ -287,7 +318,7 @@
         
         .bill-image-container img {
             max-width: 100%;
-            max-height: 350px;
+            max-height: 300px;
             border-radius: 5px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
@@ -298,11 +329,15 @@
             background-color: #f8f9fa;
             border-radius: 8px;
         }
+        
+        .persian-digit {
+            font-family: Tahoma, sans-serif;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="status-bar">
+        <div class="status-bar no-print">
             <div class="status-step active">۱</div>
             <div class="status-step">۲</div>
             <div class="status-step">۳</div>
@@ -329,7 +364,7 @@
             
             <div class="form-group">
                 <label for="unitCount">تعداد واحدهای ساختمان:</label>
-                <input type="number" id="unitCount" min="1" placeholder="مثال: 10">
+                <input type="number" id="unitCount" min="1" placeholder="مثال: ۱۰">
             </div>
             
             <div class="info-box">
@@ -394,17 +429,17 @@
                     <h3>محاسبه جداگانه آب و برق مشاع</h3>
                     <div class="form-group">
                         <label for="waterBill">مبلغ کل آب بها (ریال):</label>
-                        <input type="number" class="form-control" id="waterBill" placeholder="مثال: 4030000">
+                        <input type="number" class="form-control" id="waterBill" placeholder="مثال: ۴,۰۳۰,۰۰۰">
                     </div>
                     <div class="form-group">
                         <label for="electricityBill">مبلغ کل برق مشاع (ریال):</label>
-                        <input type="number" class="form-control" id="electricityBill" placeholder="مثال: 1173000">
+                        <input type="number" class="form-control" id="electricityBill" placeholder="مثال: ۱,۱۷۳,۰۰۰">
                     </div>
                     
                     <h3>مشخصات پرداخت</h3>
                     <div class="form-group">
                         <label for="mobileNumber">شماره موبایل:</label>
-                        <input type="text" id="mobileNumber" placeholder="09xxxxxxxxx">
+                        <input type="text" id="mobileNumber" placeholder="۰۹xxxxxxxxx">
                     </div>
                     <div class="form-group">
                         <label for="cardNumber">شماره کارت:</label>
@@ -653,7 +688,7 @@
                 
                 let tableHTML = `
                     <h3>خلاصه هزینه‌ها</h3>
-                    <p>تعداد واحدها: <strong>${state.unitCount}</strong></p>
+                    <p>تعداد واحدها: <strong>${toPersianDigits(state.unitCount)}</strong></p>
                     <p>نوع صورت حساب: <strong>تکی</strong></p>
                     <table class="summary-table">
                         <thead>
@@ -675,8 +710,8 @@
                     tableHTML += `
                         <tr>
                             <td>${section.name}</td>
-                            <td>${formatCurrency(section.amount)}</td>
-                            <td>${formatCurrency(perUnit)}</td>
+                            <td class="persian-digit">${formatCurrency(section.amount)}</td>
+                            <td class="persian-digit">${formatCurrency(perUnit)}</td>
                         </tr>
                     `;
                     
@@ -686,7 +721,7 @@
                 tableHTML += `
                         </tbody>
                     </table>
-                    <h3>مجموع هر واحد: <span class="unit-total">${formatCurrency(totalPerUnit)}</span></h3>
+                    <h3>مجموع هر واحد: <span class="unit-total persian-digit">${formatCurrency(totalPerUnit)}</span></h3>
                 `;
                 
                 // Add images if any
@@ -742,8 +777,8 @@
                         tableHTML += `
                             <div class="calculation-row">
                                 <span class="calculation-title">سهم آب بها به جز واحد ۲:</span>
-                                <span class="calculation-result">
-                                    ${formatNumber(waterBillInputVal)} ÷ 7 = ${formatNumber(waterShare)} ریال
+                                <span class="calculation-result persian-digit">
+                                    ${toPersianDigits(waterBillInputVal)} ÷ ۷ = ${toPersianDigits(waterShare)} ریال
                                 </span>
                             </div>
                         `;
@@ -753,8 +788,8 @@
                         tableHTML += `
                             <div class="calculation-row">
                                 <span class="calculation-title">برق مشاع و سهم واحد ۲:</span>
-                                <span class="calculation-result">
-                                    ${formatNumber(electricityBillInputVal)} ÷ 8 = ${formatNumber(electricityShare)} ریال
+                                <span class="calculation-result persian-digit">
+                                    ${toPersianDigits(electricityBillInputVal)} ÷ ۸ = ${toPersianDigits(electricityShare)} ریال
                                 </span>
                             </div>
                         `;
@@ -764,8 +799,8 @@
                         tableHTML += `
                             <div class="calculation-row">
                                 <span class="calculation-title">جمع پرداختی ۷ واحد برای آب بها و برق مشاع:</span>
-                                <span class="calculation-result">
-                                    ${formatNumber(waterShare)} + ${formatNumber(electricityShare)} = ${formatNumber(totalCombinedShare)} ریال
+                                <span class="calculation-result persian-digit">
+                                    ${toPersianDigits(waterShare)} + ${toPersianDigits(electricityShare)} = ${toPersianDigits(totalCombinedShare)} ریال
                                 </span>
                             </div>
                         `;
@@ -779,7 +814,7 @@
                     <div class="payment-details">
                         <p><strong>شماره کارت:</strong> ${state.cardNumber}</p>
                         <p><strong>به نام:</strong> ${state.cardName}</p>
-                        <p><strong>شماره موبایل:</strong> ${state.mobileNumber}</p>
+                        <p><strong>شماره موبایل:</strong> ${toPersianDigits(state.mobileNumber)}</p>
                     </div>
                     <p style="text-align: center; margin-top: 20px;">با تشکر</p>
                 </div>
@@ -815,6 +850,12 @@
             statusSteps[0].classList.add('active');
         });
         
+        // Convert English digits to Persian
+        function toPersianDigits(number) {
+            if (number === undefined || number === null) return '';
+            return number.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+        }
+        
         // Format numbers with thousands separator
         function formatNumber(num) {
             return num.toLocaleString('fa-IR');
@@ -822,7 +863,7 @@
         
         // Format currency with proper symbol
         function formatCurrency(amount) {
-            return `${formatNumber(Math.round(amount))} ${state.currency}`;
+            return `${toPersianDigits(formatNumber(Math.round(amount)))} ${state.currency}`;
         }
     </script>
 </body>
