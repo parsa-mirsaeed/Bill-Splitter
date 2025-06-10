@@ -351,9 +351,9 @@
         </div>
         <!-- Status Bar -->
         <div class="status-bar no-print">
-            <div class="status-step active">۱</div>
-            <div class="status-step">۲</div>
-            <div class="status-step">۳</div>
+            <div class="status-step active" data-lang-key="step_1">۱</div>
+            <div class="status-step" data-lang-key="step_2">۲</div>
+            <div class="status-step" data-lang-key="step_3">۳</div>
         </div>
         
         <h1 class="no-print" data-lang-key="app_title">سیستم تقسیم هزینه‌های ساختمان</h1>
@@ -382,10 +382,7 @@
 
             <div class="form-group">
                 <label for="currency" data-lang-key="currency_label">واحد پول:</label>
-                <select id="currency">
-                    <option value="تومان" data-lang-key="currency_toman">تومان</option>
-                    <option value="ریال" data-lang-key="currency_rial">ریال</option>
-                </select>
+                <select id="currency"></select>
             </div>
             
             <button id="nextToStep2" data-lang-key="continue_btn">ادامه</button>
@@ -416,8 +413,8 @@
                 <div class="form-group">
                     <label for="sectionAmount" data-lang-key="total_amount_label">مبلغ کل:</label>
                     <div style="position: relative;">
-                        <input type="text" id="sectionAmount" data-lang-key-placeholder="amount_placeholder" inputmode="numeric" style="padding-left: 50px;">
-                        <span id="currencyIndicator" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #888;"></span>
+                        <input type="text" id="sectionAmount" data-lang-key-placeholder="amount_placeholder" inputmode="numeric">
+                        <span id="currencyIndicator" style="position: absolute; top: 50%; transform: translateY(-50%); color: #888; pointer-events: none;"></span>
                     </div>
                 </div>
                 <div class="form-group">
@@ -475,8 +472,8 @@
                 
                 <div class="info-box">
                     <p><strong data-lang-key="calculation_note_title">نحوه محاسبه:</strong></p>
-                    <p data-lang-key="calculation_note_water">مبلغ آب بها بین ۷ واحد (به جز واحد ۲) تقسیم می‌شود.</p>
-                    <p data-lang-key="calculation_note_electric">مبلغ برق مشاع بین ۸ واحد (شامل واحد ۲) تقسیم می‌شود.</p>
+                    <p data-lang-key="calculation_note_water" data-lang-replace="count:7"></p>
+                    <p data-lang-key="calculation_note_electric" data-lang-replace="count:8"></p>
                 </div>
             </div>
             
@@ -502,10 +499,10 @@
         // --- TRANSLATIONS ---
         const translations = {
             en: {
-                app_title: "Building Cost Calculator", currency_toman: "Toman", currency_rial: "Rial", step1_title: "Basic Information", bill_type_mono_title: "Single Bill", bill_type_mono_desc: "Single bill with simple calculation", bill_type_multi_title: "Multiple Bills", bill_type_multi_desc: "Separate calculation for water and electricity", unit_count_label: "Number of Building Units:", unit_count_placeholder: "e.g., 10", currency_label: "Currency:", continue_btn: "Continue", step2_title_mono: "Add Cost Sections", step2_title_multi: "Water & Electricity Details", bill_type_label: "Bill Type:", select_option: "-- Select --", bill_type_water: "Water Bill", bill_type_electric: "Electricity Bill", bill_type_gas: "Gas Bill", bill_type_other: "Other", section_name_label: "Section Name:", section_name_placeholder: "Section Name", total_amount_label: "Total Amount:", amount_placeholder: "Amount", add_image_label: "Add Payment Image (Optional):", add_image_desc: "You can select multiple files at once or add them one by one.", clear_images_btn: "Clear Images", add_section_btn: "Add Section", added_sections_title: "Added Sections:", add_bill_image_label: "Add Bill Image (Optional):", separate_calc_title: "Separate Water & Electricity Calculation", water_bill_label: "Total Water Bill", water_bill_placeholder: "e.g., 4,000,000", electric_bill_label: "Total Common Electricity Bill", electric_bill_placeholder: "e.g., 1,000,000", payment_info_title: "Payment Details", mobile_label: "Mobile Number:", mobile_placeholder: "09xxxxxxxxx", card_label: "Card Number:", card_placeholder: "xxxx-xxxx-xxxx-xxxx", card_name_label: "Cardholder Name:", card_name_placeholder: "Cardholder Name", calculation_note_title: "Calculation Method:", calculation_note_water: "Water bill is divided among 7 units (excluding unit 2).", calculation_note_electric: "Common electricity is divided among 8 units (including unit 2).", step3_title: "Calculation and Report", summary_title: "Cost Summary", summary_units: "Number of units", summary_currency: "Currency", table_header_section: "Section Name", table_header_total: "Total Amount", table_header_per_unit: "Per Unit", total_per_unit_label: "Total Per Unit:", images_for_section_title: "Images for:", bill_image_title: "Bill Image", final_message_title: "Attention Residents", final_message_body: "Please deposit your share of the water and electricity bill, according to the statement, to the card number below and send the transaction SMS to my mobile number.", calc_water_share_label: "Water Share (7 units):", calc_electric_share_label: "Electricity Share (8 units):", calc_total_share_label: "Total payment per unit (except unit 2):", payment_card_num: "Card Number:", payment_card_name: "In the name of:", payment_mobile_num: "Mobile Number:", thank_you: "Thank you", back_btn: "Back", print_btn: "Print Report", alert_invalid_units: "Please enter a valid number of units greater than zero.", alert_missing_payment_info: "Please enter all payment details.", alert_no_sections: "Please add at least one cost section.", alert_invalid_section_info: "Please enter a valid section name and amount.", image_count_indicator: "(📷 {count})"
+                app_title: "Building Cost Calculator", step_1: "1", step_2: "2", step_3: "3", currency_toman: "Toman", currency_rial: "Rial", currency_usd: "USD", currency_eur: "EUR", step1_title: "Basic Information", bill_type_mono_title: "Single Bill", bill_type_mono_desc: "Single bill with simple calculation", bill_type_multi_title: "Multiple Bills", bill_type_multi_desc: "Separate calculation for water and electricity", unit_count_label: "Number of Building Units:", unit_count_placeholder: "e.g., 10", currency_label: "Currency:", continue_btn: "Continue", step2_title_mono: "Add Cost Sections", step2_title_multi: "Water & Electricity Details", bill_type_label: "Bill Type:", select_option: "-- Select --", bill_type_water: "Water Bill", bill_type_electric: "Electricity Bill", bill_type_gas: "Gas Bill", bill_type_other: "Other", section_name_label: "Section Name:", section_name_placeholder: "Section Name", total_amount_label: "Total Amount:", amount_placeholder: "Amount", add_image_label: "Add Payment Image (Optional):", add_image_desc: "You can select multiple files at once or add them one by one.", clear_images_btn: "Clear Images", add_section_btn: "Add Section", added_sections_title: "Added Sections:", add_bill_image_label: "Add Bill Image (Optional):", separate_calc_title: "Separate Water & Electricity Calculation", water_bill_label: "Total Water Bill", water_bill_placeholder: "e.g., 4,000,000", electric_bill_label: "Total Common Electricity Bill", electric_bill_placeholder: "e.g., 1,000,000", payment_info_title: "Payment Details", mobile_label: "Mobile Number:", mobile_placeholder: "09xxxxxxxxx", card_label: "Card Number:", card_placeholder: "xxxx-xxxx-xxxx-xxxx", card_name_label: "Cardholder Name:", card_name_placeholder: "Cardholder Name", calculation_note_title: "Calculation Method:", calculation_note_water: "Water bill is divided among {count} units (excluding unit 2).", calculation_note_electric: "Common electricity is divided among {count} units (including unit 2).", step3_title: "Calculation and Report", summary_title: "Cost Summary", summary_units: "Number of units", summary_currency: "Currency", table_header_section: "Section Name", table_header_total: "Total Amount", table_header_per_unit: "Per Unit", total_per_unit_label: "Total Per Unit:", images_for_section_title: "Images for:", bill_image_title: "Bill Image", final_message_title: "Attention Residents", final_message_body: "Please deposit your share of the water and electricity bill, according to the statement, to the card number below and send the transaction SMS to my mobile number.", calc_water_share_label: "Water Share ({count} units):", calc_electric_share_label: "Electricity Share ({count} units):", calc_total_share_label: "Total payment per unit (except unit 2):", payment_card_num: "Card Number:", payment_card_name: "In the name of:", payment_mobile_num: "Mobile Number:", thank_you: "Thank you", back_btn: "Back", print_btn: "Print Report", alert_invalid_units: "Please enter a valid number of units greater than zero.", alert_missing_payment_info: "Please enter all payment details.", alert_no_sections: "Please add at least one cost section.", alert_invalid_section_info: "Please enter a valid section name and amount.", image_count_indicator: "(📷 {count})"
             },
             fa: {
-                app_title: "سیستم تقسیم هزینه‌های ساختمان", currency_toman: "تومان", currency_rial: "ریال", step1_title: "اطلاعات پایه", bill_type_mono_title: "صورت حساب تکی", bill_type_mono_desc: "صورت حساب واحد با محاسبه ساده", bill_type_multi_title: "صورت حساب چندگانه", bill_type_multi_desc: "محاسبه جداگانه آب و برق مشاع", unit_count_label: "تعداد واحدهای ساختمان:", unit_count_placeholder: "مثال: ۱۰", currency_label: "واحد پول:", continue_btn: "ادامه", step2_title_mono: "افزودن بخش‌های هزینه", step2_title_multi: "جزئیات آب و برق مشاع", bill_type_label: "نوع قبض:", select_option: "-- انتخاب کنید --", bill_type_water: "قبض آب", bill_type_electric: "قبض برق", bill_type_gas: "قبض گاز", bill_type_other: "سایر", section_name_label: "نام بخش:", section_name_placeholder: "نام بخش", total_amount_label: "مبلغ کل:", amount_placeholder: "مبلغ", add_image_label: "افزودن تصویر پرداخت (اختیاری):", add_image_desc: "می‌توانید چند فایل را همزمان انتخاب کنید یا آنها را یکی یکی اضافه کنید.", clear_images_btn: "پاک کردن تصاویر", add_section_btn: "افزودن بخش", added_sections_title: "بخش‌های اضافه شده:", add_bill_image_label: "افزودن تصویر قبض (اختیاری):", separate_calc_title: "محاسبه جداگانه آب و برق مشاع", water_bill_label: "مبلغ کل آب بها", water_bill_placeholder: "مثال: ۴,۰۰۰,۰۰۰", electric_bill_label: "مبلغ کل برق مشاع", electric_bill_placeholder: "مثال: ۱,۰۰۰,۰۰۰", payment_info_title: "مشخصات پرداخت", mobile_label: "شماره موبایل:", mobile_placeholder: "۰۹xxxxxxxxx", card_label: "شماره کارت:", card_placeholder: "xxxx-xxxx-xxxx-xxxx", card_name_label: "به نام:", card_name_placeholder: "نام صاحب کارت", calculation_note_title: "نحوه محاسبه:", calculation_note_water: "مبلغ آب بها بین ۷ واحد (به جز واحد ۲) تقسیم می‌شود.", calculation_note_electric: "مبلغ برق مشاع بین ۸ واحد (شامل واحد ۲) تقسیم می‌شود.", step3_title: "محاسبه و گزارش", summary_title: "خلاصه هزینه‌ها", summary_units: "تعداد واحدها", summary_currency: "واحد پول", table_header_section: "نام بخش", table_header_total: "مبلغ کل", table_header_per_unit: "هر واحد", total_per_unit_label: "مجموع هر واحد:", images_for_section_title: "تصاویر برای:", bill_image_title: "تصویر قبض", final_message_title: "قابل توجه واحدهای محترم", final_message_body: "لطفا مبلغ آب بها و برق مشاع خود را با توجه به صورتحساب، به شماره کارت ذیل واریز و پیامک آن را به شماره موبایل اینجانب ارسال بفرمایید.", calc_water_share_label: "سهم آب بها (۷ واحد):", calc_electric_share_label: "سهم برق مشاع (۸ واحد):", calc_total_share_label: "جمع پرداختی هر واحد (بجز واحد ۲):", payment_card_num: "شماره کارت:", payment_card_name: "به نام:", payment_mobile_num: "شماره موبایل:", thank_you: "با تشکر", back_btn: "بازگشت", print_btn: "چاپ گزارش", alert_invalid_units: "لطفاً تعداد واحدهای معتبر و بزرگتر از صفر وارد کنید.", alert_missing_payment_info: "لطفاً تمامی مشخصات پرداخت را وارد کنید.", alert_no_sections: "لطفاً حداقل یک بخش هزینه اضافه کنید.", alert_invalid_section_info: "لطفاً نام بخش و مبلغ معتبر وارد کنید.", image_count_indicator: "(📷 {count})"
+                app_title: "سیستم تقسیم هزینه‌های ساختمان", step_1: "۱", step_2: "۲", step_3: "۳", currency_toman: "تومان", currency_rial: "ریال", currency_usd: "دلار", currency_eur: "یورو", step1_title: "اطلاعات پایه", bill_type_mono_title: "صورت حساب تکی", bill_type_mono_desc: "صورت حساب واحد با محاسبه ساده", bill_type_multi_title: "صورت حساب چندگانه", bill_type_multi_desc: "محاسبه جداگانه آب و برق مشاع", unit_count_label: "تعداد واحدهای ساختمان:", unit_count_placeholder: "مثال: ۱۰", currency_label: "واحد پول:", continue_btn: "ادامه", step2_title_mono: "افزودن بخش‌های هزینه", step2_title_multi: "جزئیات آب و برق مشاع", bill_type_label: "نوع قبض:", select_option: "-- انتخاب کنید --", bill_type_water: "قبض آب", bill_type_electric: "قبض برق", bill_type_gas: "قبض گاز", bill_type_other: "سایر", section_name_label: "نام بخش:", section_name_placeholder: "نام بخش", total_amount_label: "مبلغ کل:", amount_placeholder: "مبلغ", add_image_label: "افزودن تصویر پرداخت (اختیاری):", add_image_desc: "می‌توانید چند فایل را همزمان انتخاب کنید یا آنها را یکی یکی اضافه کنید.", clear_images_btn: "پاک کردن تصاویر", add_section_btn: "افزودن بخش", added_sections_title: "بخش‌های اضافه شده:", add_bill_image_label: "افزودن تصویر قبض (اختیاری):", separate_calc_title: "محاسبه جداگانه آب و برق مشاع", water_bill_label: "مبلغ کل آب بها", water_bill_placeholder: "مثال: ۴,۰۰۰,۰۰۰", electric_bill_label: "مبلغ کل برق مشاع", electric_bill_placeholder: "مثال: ۱,۰۰۰,۰۰۰", payment_info_title: "مشخصات پرداخت", mobile_label: "شماره موبایل:", mobile_placeholder: "۰۹xxxxxxxxx", card_label: "شماره کارت:", card_placeholder: "xxxx-xxxx-xxxx-xxxx", card_name_label: "به نام:", card_name_placeholder: "نام صاحب کارت", calculation_note_title: "نحوه محاسبه:", calculation_note_water: "مبلغ آب بها بین {count} واحد (به جز واحد ۲) تقسیم می‌شود.", calculation_note_electric: "مبلغ برق مشاع بین {count} واحد (شامل واحد ۲) تقسیم می‌شود.", step3_title: "محاسبه و گزارش", summary_title: "خلاصه هزینه‌ها", summary_units: "تعداد واحدها", summary_currency: "واحد پول", table_header_section: "نام بخش", table_header_total: "مبلغ کل", table_header_per_unit: "هر واحد", total_per_unit_label: "مجموع هر واحد:", images_for_section_title: "تصاویر برای:", bill_image_title: "تصویر قبض", final_message_title: "قابل توجه واحدهای محترم", final_message_body: "لطفا مبلغ آب بها و برق مشاع خود را با توجه به صورتحساب، به شماره کارت ذیل واریز و پیامک آن را به شماره موبایل اینجانب ارسال بفرمایید.", calc_water_share_label: "سهم آب بها ({count} واحد):", calc_electric_share_label: "سهم برق مشاع ({count} واحد):", calc_total_share_label: "جمع پرداختی هر واحد (بجز واحد ۲):", payment_card_num: "شماره کارت:", payment_card_name: "به نام:", payment_mobile_num: "شماره موبایل:", thank_you: "با تشکر", back_btn: "بازگشت", print_btn: "چاپ گزارش", alert_invalid_units: "لطفاً تعداد واحدهای معتبر و بزرگتر از صفر وارد کنید.", alert_missing_payment_info: "لطفاً تمامی مشخصات پرداخت را وارد کنید.", alert_no_sections: "لطفاً حداقل یک بخش هزینه اضافه کنید.", alert_invalid_section_info: "لطفاً نام بخش و مبلغ معتبر وارد کنید.", image_count_indicator: "(📷 {count})"
             }
         };
 
@@ -515,7 +512,7 @@
             billType: 'mono',
             unitCount: 0,
             sections: [],
-            currency: 'تومان',
+            currency: 'toman', // 'toman', 'rial', 'usd', 'eur'
             multiBillImages: [],
             tempImages: [],
             paymentDetails: { mobileNumber: '', cardNumber: '', cardName: '' }
@@ -529,10 +526,23 @@
         const step2Title = document.getElementById('step2Title');
         
         // --- HELPER FUNCTIONS ---
-        const toPersianDigits = (num) => (num ?? '').toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+        const toPersianDigits = (num) => (num ?? '').toString().replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
         const formatNumber = (num) => num.toLocaleString('en-US');
-        const localizeNumber = (num) => state.lang === 'fa' ? toPersianDigits(formatNumber(num)) : formatNumber(num);
-        const localizeCurrency = (amount) => `${localizeNumber(Math.round(amount))} ${state.currency}`;
+        const localizeNumber = (num) => state.lang === 'fa' ? toPersianDigits(String(num)) : String(num);
+        const parseFormattedNumber = (str) => parseFloat(String(str).replace(/,/g, '')) || 0;
+
+        function localizeCurrency(amount) {
+            const T = translations[state.lang];
+            const num = Math.round(amount);
+            const formattedNum = formatNumber(num);
+            switch (state.currency) {
+                case 'usd': return `$${formattedNum}`;
+                case 'eur': return `€${formattedNum}`;
+                case 'toman': return `${toPersianDigits(formattedNum)} ${T.currency_toman}`;
+                case 'rial': return `${toPersianDigits(formattedNum)} ${T.currency_rial}`;
+                default: return `${localizeNumber(num)}`;
+            }
+        }
         const showAlert = (key) => alert(translations[state.lang][key]);
 
         // --- LANGUAGE & UI ---
@@ -541,15 +551,52 @@
             document.documentElement.lang = lang;
             document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
 
+            // Populate currency dropdown based on language
+            const currencySelect = document.getElementById('currency');
+            const availableCurrencies = lang === 'fa' 
+                ? { toman: 'currency_toman', rial: 'currency_rial' }
+                : { usd: 'currency_usd', eur: 'currency_eur', toman: 'currency_toman', rial: 'currency_rial' };
+            
+            currencySelect.innerHTML = '';
+            for (const [value, key] of Object.entries(availableCurrencies)) {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = translations[lang][key];
+                currencySelect.appendChild(option);
+            }
+
+            // Set default currency when switching language
+            if (lang === 'en' && (state.currency === 'toman' || state.currency === 'rial')) {
+                state.currency = 'usd';
+            } else if (lang === 'fa' && (state.currency === 'usd' || state.currency === 'eur')) {
+                state.currency = 'toman';
+            }
+            currencySelect.value = state.currency;
+
+            // Translate all elements with data-lang-key
             document.querySelectorAll('[data-lang-key]').forEach(el => {
                 const key = el.getAttribute('data-lang-key');
-                el.innerText = translations[lang][key];
+                let text = translations[lang][key] || key;
+                
+                // Handle replacements for elements with data-lang-replace
+                const replacements = el.getAttribute('data-lang-replace');
+                if (replacements) {
+                    const pairs = replacements.split(',');
+                    pairs.forEach(pair => {
+                        const [placeholder, value] = pair.split(':');
+                        text = text.replace(`{${placeholder}}`, localizeNumber(value));
+                    });
+                }
+                el.innerText = text;
             });
+
+            // Translate all placeholders
             document.querySelectorAll('[data-lang-key-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-lang-key-placeholder');
                 el.placeholder = translations[lang][key];
             });
 
+            // Refresh UI components that depend on language
             updateCurrencyUI();
             if(steps.step2.classList.contains('active')) {
                 const titleKey = state.billType === 'mono' ? 'step2_title_mono' : 'step2_title_multi';
@@ -562,10 +609,42 @@
         }
 
         function updateCurrencyUI() {
-            const currencyName = state.currency === 'تومان' ? translations[state.lang].currency_toman : translations[state.lang].currency_rial;
-            document.getElementById('currencyIndicator').textContent = currencyName;
-            document.getElementById('waterBillLabel').textContent = `${translations[state.lang].water_bill_label} (${currencyName}):`;
-            document.getElementById('electricityBillLabel').textContent = `${translations[state.lang].electric_bill_label} (${currencyName}):`;
+            const currencyIndicator = document.getElementById('currencyIndicator');
+            const currencySelect = document.getElementById('currency');
+            const selectedOption = currencySelect.options[currencySelect.selectedIndex];
+            let currencyDisplayName = '';
+            let currencySymbol = '';
+
+            if (selectedOption) {
+                switch(state.currency) {
+                    case 'usd': currencySymbol = '$'; break;
+                    case 'eur': currencySymbol = '€'; break;
+                    default: currencyDisplayName = selectedOption.textContent;
+                }
+            }
+            
+            currencyIndicator.textContent = currencySymbol || currencyDisplayName;
+            const isSymbol = !!currencySymbol;
+            const symbolPadding = "15px";
+            const textPadding = "50px";
+
+            // Adjust padding based on LTR/RTL and symbol/text
+            if (document.documentElement.dir === 'ltr') {
+                currencyIndicator.style.left = '10px';
+                currencyIndicator.style.right = '';
+                document.getElementById('sectionAmount').style.paddingLeft = isSymbol ? symbolPadding : textPadding;
+                document.getElementById('sectionAmount').style.paddingRight = '12px';
+            } else { // RTL
+                currencyIndicator.style.right = '10px';
+                currencyIndicator.style.left = '';
+                document.getElementById('sectionAmount').style.paddingRight = textPadding;
+                document.getElementById('sectionAmount').style.paddingLeft = '12px';
+            }
+            
+            const waterLabel = `${translations[state.lang].water_bill_label} (${currencySymbol || currencyDisplayName}):`;
+            const elecLabel = `${translations[state.lang].electric_bill_label} (${currencySymbol || currencyDisplayName}):`;
+            document.getElementById('waterBillLabel').textContent = waterLabel;
+            document.getElementById('electricityBillLabel').textContent = elecLabel;
         }
 
         function showStep(stepId) {
@@ -640,7 +719,7 @@
             });
 
             document.getElementById('currency').addEventListener('change', (e) => {
-                state.currency = e.target.options[e.target.selectedIndex].text;
+                state.currency = e.target.value;
                 updateCurrencyUI();
             });
 
@@ -681,7 +760,6 @@
                 if (name === 'other') {
                     name = document.getElementById('sectionName').value.trim();
                 } else if (name) {
-                    // Use translated name from option text for non-custom types
                     name = sectionSelect.options[sectionSelect.selectedIndex].text;
                 }
                 
@@ -728,17 +806,17 @@
             container.innerHTML = '';
             
             if (state.billType === 'mono') {
-                let totalPerUnit = state.sections.reduce((sum, s) => sum + (s.amount / state.unitCount), 0);
+                let totalPerUnit = state.sections.length > 0 ? state.sections.reduce((sum, s) => sum + (s.amount / state.unitCount), 0) : 0;
                 
                 let tableHTML = `
                     <h3>${T.summary_title}</h3>
-                    <p>${T.summary_units}: <strong>${localizeNumber(state.unitCount)}</strong> | ${T.summary_currency}: <strong>${state.currency}</strong></p>
+                    <p>${T.summary_units}: <strong>${localizeNumber(state.unitCount)}</strong> | ${T.summary_currency}: <strong>${document.getElementById('currency').options[document.getElementById('currency').selectedIndex].text}</strong></p>
                     <table class="summary-table">
                         <thead><tr><th>${T.table_header_section}</th><th>${T.table_header_total}</th><th>${T.table_header_per_unit}</th></tr></thead><tbody>`;
                 state.sections.forEach(section => {
-                    tableHTML += `<tr><td>${section.name}</td><td class="persian-digit">${localizeCurrency(section.amount)}</td><td class="persian-digit">${localizeCurrency(section.amount / state.unitCount)}</td></tr>`;
+                    tableHTML += `<tr><td>${section.name}</td><td>${localizeCurrency(section.amount)}</td><td>${localizeCurrency(section.amount / state.unitCount)}</td></tr>`;
                 });
-                tableHTML += `</tbody></table><h3>${T.total_per_unit_label} <span class="unit-total persian-digit">${localizeCurrency(totalPerUnit)}</span></h3>`;
+                tableHTML += `</tbody></table><h3>${T.total_per_unit_label} <span class="unit-total">${localizeCurrency(totalPerUnit)}</span></h3>`;
                 
                 state.sections.forEach(section => {
                     if (section.images && section.images.length > 0) {
@@ -767,13 +845,15 @@
                 if (waterBill > 0 || electricityBill > 0) {
                     reportHTML += `<div class="calculation-container">`;
                     if (waterBill > 0) {
-                        reportHTML += `<div class="calculation-row"><span class="calculation-title">${T.calc_water_share_label}</span><span class="calculation-result">${localizeNumber(waterBill)} ÷ ۷ = ${localizeCurrency(waterShare)}</span></div>`;
+                        const waterTitle = T.calc_water_share_label.replace('{count}', localizeNumber(7));
+                        reportHTML += `<div class="calculation-row"><span class="calculation-title">${waterTitle}</span><span class="calculation-result">${localizeNumber(formatNumber(waterBill))} ÷ ${localizeNumber(7)} = ${localizeCurrency(waterShare)}</span></div>`;
                     }
                     if (electricityBill > 0) {
-                        reportHTML += `<div class="calculation-row"><span class="calculation-title">${T.calc_electric_share_label}</span><span class="calculation-result">${localizeNumber(electricityBill)} ÷ ۸ = ${localizeCurrency(electricityShare)}</span></div>`;
+                        const elecTitle = T.calc_electric_share_label.replace('{count}', localizeNumber(8));
+                        reportHTML += `<div class="calculation-row"><span class="calculation-title">${elecTitle}</span><span class="calculation-result">${localizeNumber(formatNumber(electricityBill))} ÷ ${localizeNumber(8)} = ${localizeCurrency(electricityShare)}</span></div>`;
                     }
                     if (waterBill > 0 && electricityBill > 0) {
-                        reportHTML += `<div class="calculation-row"><span class="calculation-title">${T.calc_total_share_label}</span><span class="calculation-result">${localizeNumber(waterShare)} + ${localizeNumber(electricityShare)} = ${localizeCurrency(totalCombinedShare)}</span></div>`;
+                        reportHTML += `<div class="calculation-row"><span class="calculation-title">${T.calc_total_share_label}</span><span class="calculation-result">${localizeNumber(formatNumber(waterShare))} + ${localizeNumber(formatNumber(electricityShare))} = ${localizeCurrency(totalCombinedShare)}</span></div>`;
                     }
                     reportHTML += `</div>`;
                 }
@@ -783,7 +863,7 @@
                         <div class="payment-details">
                             <p><strong>${T.payment_card_num}</strong> <span style="font-size: 1.1em; letter-spacing: 2px;">${localizeNumber(cardNumber)}</span></p>
                             <p><strong>${T.payment_card_name}</strong> ${cardName}</p>
-                            <p><strong>${T.payment_mobile_num}</strong> <span class="persian-digit">${localizeNumber(mobileNumber)}</span></p>
+                            <p><strong>${T.payment_mobile_num}</strong> <span>${localizeNumber(mobileNumber)}</span></p>
                         </div>
                         <p style="text-align: center; margin-top: 20px;">${T.thank_you}</p>
                     </div>`;
