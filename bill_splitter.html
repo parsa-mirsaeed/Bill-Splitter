@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سیستم تقسیم هزینه‌های ساختمان</title>
+    <title data-lang-key="app_title">سیستم تقسیم هزینه‌های ساختمان</title>
     <style>
         /* General Styles */
         * {
@@ -19,6 +19,10 @@
             max-width: 900px;
             margin: 0 auto;
         }
+
+        /* Language-specific direction */
+        html[dir="rtl"] { text-align: right; }
+        html[dir="ltr"] { text-align: left; }
         
         .container {
             background: white;
@@ -61,9 +65,14 @@
             font-size: 16px;
         }
 
-        input[type="text"], input[type="number"] {
+        /* LTR for numbers, RTL for placeholders in Farsi */
+        html[dir="rtl"] input[type="text"], html[dir="rtl"] input[type="number"] {
             direction: ltr;
             text-align: right;
+        }
+        html[dir="ltr"] input[type="text"], html[dir="ltr"] input[type="number"] {
+            direction: ltr;
+            text-align: left;
         }
         
         button {
@@ -155,21 +164,31 @@
             font-size: 18px;
             color: #2c3e50;
             direction: ltr;
-            text-align: left;
         }
+        html[dir="rtl"] .calculation-result { text-align: left; }
+        html[dir="ltr"] .calculation-result { text-align: right; }
         
         /* UI Components */
+        .language-switcher {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .language-switcher select {
+            width: auto;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
         .payment-details {
             background: #e8f4fd;
-            border-left: 4px solid #3498db;
+            border-width: 0;
             padding: 15px;
             margin: 25px 0;
-            border-radius: 0 5px 5px 0;
+            border-radius: 5px;
         }
-        
-        .payment-details p {
-            margin: 8px 0;
-        }
+        html[dir="rtl"] .payment-details { border-right: 4px solid #3498db; }
+        html[dir="ltr"] .payment-details { border-left: 4px solid #3498db; }
+
+        .payment-details p { margin: 8px 0; }
         
         .final-message {
             background-color: #f0f9f0;
@@ -254,11 +273,12 @@
         
         .info-box {
             background-color: #e8f4fd;
-            border-left: 4px solid #3498db;
             padding: 15px;
             margin: 15px 0;
-            border-radius: 0 5px 5px 0;
+            border-radius: 5px;
         }
+        html[dir="rtl"] .info-box { border-right: 4px solid #3498db; }
+        html[dir="ltr"] .info-box { border-left: 4px solid #3498db; }
         
         /* Image Styles */
         .image-preview-container {
@@ -272,9 +292,7 @@
             min-height: 50px;
         }
 
-        .image-preview-container:empty {
-            display: none;
-        }
+        .image-preview-container:empty { display: none; }
 
         .image-preview-container img {
             max-width: 100px;
@@ -307,47 +325,30 @@
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
         
-        .persian-digit {
-            font-family: Tahoma, sans-serif;
-        }
+        .persian-digit { font-family: Tahoma, sans-serif; }
 
         /* --- PRINT STYLES --- */
         @media print {
             .no-print, .btn-container, .status-bar {
                 display: none !important;
             }
-            
-            body {
-                padding: 0;
-                background: white;
-                zoom: 90%;
-                width: 100%;
-            }
-            
-            .container {
-                box-shadow: none;
-                padding: 10px;
-                margin: 0;
-                width: 100%;
-                max-width: 100%;
-            }
-            
-            h1, h2, h3 {
-                font-size: 18px;
-            }
-            
-            .calculation-container, .payment-details, .final-message, .bill-image-container {
-                page-break-inside: avoid;
-            }
-
-            .bill-image-container img {
-                max-height: 250px;
-            }
+            body { padding: 0; background: white; zoom: 90%; width: 100%; }
+            .container { box-shadow: none; padding: 10px; margin: 0; width: 100%; max-width: 100%; }
+            h1, h2, h3 { font-size: 18px; }
+            .calculation-container, .payment-details, .final-message, .bill-image-container { page-break-inside: avoid; }
+            .bill-image-container img { max-height: 250px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Language Switcher -->
+        <div class="language-switcher no-print">
+            <select id="lang-switcher">
+                <option value="fa">فارسی</option>
+                <option value="en">English</option>
+            </select>
+        </div>
         <!-- Status Bar -->
         <div class="status-bar no-print">
             <div class="status-step active">۱</div>
@@ -355,172 +356,173 @@
             <div class="status-step">۳</div>
         </div>
         
-        <h1 class="no-print">سیستم تقسیم هزینه‌های ساختمان</h1>
+        <h1 class="no-print" data-lang-key="app_title">سیستم تقسیم هزینه‌های ساختمان</h1>
         
         <!-- Step 1: Bill Type and Basic Info -->
         <div id="step1" class="step active">
-            <h2 class="no-print">اطلاعات پایه</h2>
+            <h2 class="no-print" data-lang-key="step1_title">اطلاعات پایه</h2>
             
             <div class="bill-type-selector">
                 <div class="bill-type selected" data-type="mono">
                     <div class="bill-type-icon">🧾</div>
-                    <h3>صورت حساب تکی</h3>
-                    <p>صورت حساب واحد با محاسبه ساده</p>
+                    <h3 data-lang-key="bill_type_mono_title">صورت حساب تکی</h3>
+                    <p data-lang-key="bill_type_mono_desc">صورت حساب واحد با محاسبه ساده</p>
                 </div>
                 <div class="bill-type" data-type="multi">
                     <div class="bill-type-icon">📑</div>
-                    <h3>صورت حساب چندگانه</h3>
-                    <p>محاسبه جداگانه آب و برق مشاع</p>
+                    <h3 data-lang-key="bill_type_multi_title">صورت حساب چندگانه</h3>
+                    <p data-lang-key="bill_type_multi_desc">محاسبه جداگانه آب و برق مشاع</p>
                 </div>
             </div>
             
             <div class="form-group">
-                <label for="unitCount">تعداد واحدهای ساختمان:</label>
-                <input type="number" id="unitCount" min="1" placeholder="مثال: ۱۰">
+                <label for="unitCount" data-lang-key="unit_count_label">تعداد واحدهای ساختمان:</label>
+                <input type="number" id="unitCount" min="1" data-lang-key-placeholder="unit_count_placeholder">
             </div>
 
             <div class="form-group">
-                <label for="currency">واحد پول:</label>
+                <label for="currency" data-lang-key="currency_label">واحد پول:</label>
                 <select id="currency">
-                    <option value="تومان" selected>تومان</option>
-                    <option value="ریال">ریال</option>
+                    <option value="تومان" data-lang-key="currency_toman">تومان</option>
+                    <option value="ریال" data-lang-key="currency_rial">ریال</option>
                 </select>
             </div>
             
-            <button id="nextToStep2">ادامه</button>
+            <button id="nextToStep2" data-lang-key="continue_btn">ادامه</button>
         </div>
         
         <!-- Step 2: Bill Details -->
         <div id="step2" class="step">
-            <h2 id="step2Title" class="no-print">جزئیات هزینه‌ها</h2>
+            <h2 id="step2Title" class="no-print"></h2>
             
             <!-- Mono-bill section -->
             <div id="monoBillSection" style="display: none;">
                 <div class="form-group">
-                    <label for="sectionType">نوع قبض:</label>
+                    <label for="sectionType" data-lang-key="bill_type_label">نوع قبض:</label>
                     <select id="sectionType">
-                        <option value="">-- انتخاب کنید --</option>
-                        <option value="قبض آب">قبض آب</option>
-                        <option value="قبض برق">قبض برق</option>
-                        <option value="قبض گاز">قبض گاز</option>
-                        <option value="other">سایر</option>
+                        <option value="" data-lang-key="select_option">-- انتخاب کنید --</option>
+                        <option value="قبض آب" data-lang-key="bill_type_water">قبض آب</option>
+                        <option value="قبض برق" data-lang-key="bill_type_electric">قبض برق</option>
+                        <option value="قبض گاز" data-lang-key="bill_type_gas">قبض گاز</option>
+                        <option value="other" data-lang-key="bill_type_other">سایر</option>
                     </select>
                 </div>
                 
                 <div class="form-group" id="customSectionGroup" style="display: none;">
-                    <label for="sectionName">نام بخش:</label>
-                    <input type="text" id="sectionName" placeholder="نام بخش">
+                    <label for="sectionName" data-lang-key="section_name_label">نام بخش:</label>
+                    <input type="text" id="sectionName" data-lang-key-placeholder="section_name_placeholder">
                 </div>
                 
                 <div class="form-group">
-                    <label for="sectionAmount">مبلغ کل:</label>
+                    <label for="sectionAmount" data-lang-key="total_amount_label">مبلغ کل:</label>
                     <div style="position: relative;">
-                        <input type="text" id="sectionAmount" placeholder="مبلغ" inputmode="numeric" style="padding-left: 50px;">
-                        <span id="currencyIndicator" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #888;">
-                            تومان
-                        </span>
+                        <input type="text" id="sectionAmount" data-lang-key-placeholder="amount_placeholder" inputmode="numeric" style="padding-left: 50px;">
+                        <span id="currencyIndicator" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #888;"></span>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="sectionImage">افزودن تصویر پرداخت (اختیاری):</label>
-                    <p style="font-size: 0.9em; color: #777; margin-top: -5px; margin-bottom: 5px;">می‌توانید چند فایل را همزمان انتخاب کنید یا آنها را یکی یکی اضافه کنید.</p>
+                    <label for="sectionImage" data-lang-key="add_image_label">افزودن تصویر پرداخت (اختیاری):</label>
+                    <p style="font-size: 0.9em; color: #777; margin-top: -5px; margin-bottom: 5px;" data-lang-key="add_image_desc">می‌توانید چند فایل را همزمان انتخاب کنید یا آنها را یکی یکی اضافه کنید.</p>
                     <div style="display: flex; gap: 10px;">
                          <input type="file" id="sectionImage" accept="image/*" multiple style="flex: 1;">
-                         <button type="button" id="clearSectionImages" class="btn-secondary" style="flex: 0 0 120px;">پاک کردن تصاویر</button>
+                         <button type="button" id="clearSectionImages" class="btn-secondary" style="flex: 0 0 120px;" data-lang-key="clear_images_btn">پاک کردن تصاویر</button>
                     </div>
                     <div id="imagePreviewContainer" class="image-preview-container"></div>
                 </div>
-                <button id="addSection">افزودن بخش</button>
+                <button id="addSection" data-lang-key="add_section_btn">افزودن بخش</button>
                 
-                <h3>بخش‌های اضافه شده:</h3>
+                <h3 data-lang-key="added_sections_title">بخش‌های اضافه شده:</h3>
                 <ul id="sectionList" class="section-list"></ul>
             </div>
             
             <!-- Multi-bill section -->
             <div id="multiBillSection" style="display: none;">
                 <div class="form-group">
-                    <label for="billImage">افزودن تصویر قبض (اختیاری):</label>
-                    <p style="font-size: 0.9em; color: #777; margin-top: -5px; margin-bottom: 5px;">می‌توانید چند فایل را همزمان انتخاب کنید یا آنها را یکی یکی اضافه کنید.</p>
+                    <label for="billImage" data-lang-key="add_bill_image_label">افزودن تصویر قبض (اختیاری):</label>
+                    <p style="font-size: 0.9em; color: #777; margin-top: -5px; margin-bottom: 5px;" data-lang-key="add_image_desc">می‌توانید چند فایل را همزمان انتخاب کنید یا آنها را یکی یکی اضافه کنید.</p>
                     <div style="display: flex; gap: 10px;">
                         <input type="file" id="billImage" accept="image/*" multiple style="flex: 1;">
-                        <button type="button" id="clearMultiBillImages" class="btn-secondary" style="flex: 0 0 120px;">پاک کردن تصاویر</button>
+                        <button type="button" id="clearMultiBillImages" class="btn-secondary" style="flex: 0 0 120px;" data-lang-key="clear_images_btn">پاک کردن تصاویر</button>
                     </div>
                     <div id="multiBillImagePreviewContainer" class="image-preview-container"></div>
                 </div>
                 
                 <div class="special-inputs">
-                    <h3>محاسبه جداگانه آب و برق مشاع</h3>
+                    <h3 data-lang-key="separate_calc_title">محاسبه جداگانه آب و برق مشاع</h3>
                     <div class="form-group">
-                        <label for="waterBill" id="waterBillLabel">مبلغ کل آب بها:</label>
-                        <input type="text" class="form-control" id="waterBill" placeholder="مثال: ۴,۰۰۰,۰۰۰" inputmode="numeric">
+                        <label for="waterBill" id="waterBillLabel"></label>
+                        <input type="text" class="form-control" id="waterBill" data-lang-key-placeholder="water_bill_placeholder" inputmode="numeric">
                     </div>
                     <div class="form-group">
-                        <label for="electricityBill" id="electricityBillLabel">مبلغ کل برق مشاع:</label>
-                        <input type="text" class="form-control" id="electricityBill" placeholder="مثال: ۱,۰۰۰,۰۰۰" inputmode="numeric">
+                        <label for="electricityBill" id="electricityBillLabel"></label>
+                        <input type="text" class="form-control" id="electricityBill" data-lang-key-placeholder="electric_bill_placeholder" inputmode="numeric">
                     </div>
                     
-                    <h3>مشخصات پرداخت</h3>
+                    <h3 data-lang-key="payment_info_title">مشخصات پرداخت</h3>
                     <div class="form-group">
-                        <label for="mobileNumber">شماره موبایل:</label>
-                        <input type="text" id="mobileNumber" placeholder="۰۹xxxxxxxxx">
+                        <label for="mobileNumber" data-lang-key="mobile_label">شماره موبایل:</label>
+                        <input type="text" id="mobileNumber" data-lang-key-placeholder="mobile_placeholder">
                     </div>
                     <div class="form-group">
-                        <label for="cardNumber">شماره کارت:</label>
-                        <input type="text" id="cardNumber" placeholder="xxxx-xxxx-xxxx-xxxx" inputmode="numeric">
+                        <label for="cardNumber" data-lang-key="card_label">شماره کارت:</label>
+                        <input type="text" id="cardNumber" data-lang-key-placeholder="card_placeholder" inputmode="numeric">
                     </div>
                     <div class="form-group">
-                        <label for="cardName">به نام:</label>
-                        <input type="text" id="cardName" placeholder="نام صاحب کارت">
+                        <label for="cardName" data-lang-key="card_name_label">به نام:</label>
+                        <input type="text" id="cardName" data-lang-key-placeholder="card_name_placeholder">
                     </div>
                 </div>
                 
                 <div class="info-box">
-                    <p><strong>نحوه محاسبه:</strong></p>
-                    <p>مبلغ آب بها بین ۷ واحد (به جز واحد ۲) تقسیم می‌شود.</p>
-                    <p>مبلغ برق مشاع بین ۸ واحد (شامل واحد ۲) تقسیم می‌شود.</p>
+                    <p><strong data-lang-key="calculation_note_title">نحوه محاسبه:</strong></p>
+                    <p data-lang-key="calculation_note_water">مبلغ آب بها بین ۷ واحد (به جز واحد ۲) تقسیم می‌شود.</p>
+                    <p data-lang-key="calculation_note_electric">مبلغ برق مشاع بین ۸ واحد (شامل واحد ۲) تقسیم می‌شود.</p>
                 </div>
             </div>
             
             <div class="btn-container">
-                <button class="btn-secondary" id="backToStep1">بازگشت</button>
-                <button id="nextToStep3">ادامه به محاسبه</button>
+                <button class="btn-secondary" id="backToStep1" data-lang-key="back_btn">بازگشت</button>
+                <button id="nextToStep3" data-lang-key="continue_btn">ادامه به محاسبه</button>
             </div>
         </div>
         
         <!-- Step 3: Review and Calculate -->
         <div id="step3" class="step">
-            <h2 class="no-print">محاسبه و گزارش</h2>
+            <h2 class="no-print" data-lang-key="step3_title">محاسبه و گزارش</h2>
             <div id="summaryContainer"></div>
             
             <div class="btn-container">
-                <button class="btn-secondary" id="backToStep2">بازگشت</button>
-                <button id="printReport" class="print-btn">چاپ گزارش</button>
+                <button class="btn-secondary" id="backToStep2" data-lang-key="back_btn">بازگشت</button>
+                <button id="printReport" class="print-btn" data-lang-key="print_btn">چاپ گزارش</button>
             </div>
         </div>
     </div>
 
     <script>
+        // --- TRANSLATIONS ---
+        const translations = {
+            en: {
+                app_title: "Building Cost Calculator", currency_toman: "Toman", currency_rial: "Rial", step1_title: "Basic Information", bill_type_mono_title: "Single Bill", bill_type_mono_desc: "Single bill with simple calculation", bill_type_multi_title: "Multiple Bills", bill_type_multi_desc: "Separate calculation for water and electricity", unit_count_label: "Number of Building Units:", unit_count_placeholder: "e.g., 10", currency_label: "Currency:", continue_btn: "Continue", step2_title_mono: "Add Cost Sections", step2_title_multi: "Water & Electricity Details", bill_type_label: "Bill Type:", select_option: "-- Select --", bill_type_water: "Water Bill", bill_type_electric: "Electricity Bill", bill_type_gas: "Gas Bill", bill_type_other: "Other", section_name_label: "Section Name:", section_name_placeholder: "Section Name", total_amount_label: "Total Amount:", amount_placeholder: "Amount", add_image_label: "Add Payment Image (Optional):", add_image_desc: "You can select multiple files at once or add them one by one.", clear_images_btn: "Clear Images", add_section_btn: "Add Section", added_sections_title: "Added Sections:", add_bill_image_label: "Add Bill Image (Optional):", separate_calc_title: "Separate Water & Electricity Calculation", water_bill_label: "Total Water Bill", water_bill_placeholder: "e.g., 4,000,000", electric_bill_label: "Total Common Electricity Bill", electric_bill_placeholder: "e.g., 1,000,000", payment_info_title: "Payment Details", mobile_label: "Mobile Number:", mobile_placeholder: "09xxxxxxxxx", card_label: "Card Number:", card_placeholder: "xxxx-xxxx-xxxx-xxxx", card_name_label: "Cardholder Name:", card_name_placeholder: "Cardholder Name", calculation_note_title: "Calculation Method:", calculation_note_water: "Water bill is divided among 7 units (excluding unit 2).", calculation_note_electric: "Common electricity is divided among 8 units (including unit 2).", step3_title: "Calculation and Report", summary_title: "Cost Summary", summary_units: "Number of units", summary_currency: "Currency", table_header_section: "Section Name", table_header_total: "Total Amount", table_header_per_unit: "Per Unit", total_per_unit_label: "Total Per Unit:", images_for_section_title: "Images for:", bill_image_title: "Bill Image", final_message_title: "Attention Residents", final_message_body: "Please deposit your share of the water and electricity bill, according to the statement, to the card number below and send the transaction SMS to my mobile number.", calc_water_share_label: "Water Share (7 units):", calc_electric_share_label: "Electricity Share (8 units):", calc_total_share_label: "Total payment per unit (except unit 2):", payment_card_num: "Card Number:", payment_card_name: "In the name of:", payment_mobile_num: "Mobile Number:", thank_you: "Thank you", back_btn: "Back", print_btn: "Print Report", alert_invalid_units: "Please enter a valid number of units greater than zero.", alert_missing_payment_info: "Please enter all payment details.", alert_no_sections: "Please add at least one cost section.", alert_invalid_section_info: "Please enter a valid section name and amount.", image_count_indicator: "(📷 {count})"
+            },
+            fa: {
+                app_title: "سیستم تقسیم هزینه‌های ساختمان", currency_toman: "تومان", currency_rial: "ریال", step1_title: "اطلاعات پایه", bill_type_mono_title: "صورت حساب تکی", bill_type_mono_desc: "صورت حساب واحد با محاسبه ساده", bill_type_multi_title: "صورت حساب چندگانه", bill_type_multi_desc: "محاسبه جداگانه آب و برق مشاع", unit_count_label: "تعداد واحدهای ساختمان:", unit_count_placeholder: "مثال: ۱۰", currency_label: "واحد پول:", continue_btn: "ادامه", step2_title_mono: "افزودن بخش‌های هزینه", step2_title_multi: "جزئیات آب و برق مشاع", bill_type_label: "نوع قبض:", select_option: "-- انتخاب کنید --", bill_type_water: "قبض آب", bill_type_electric: "قبض برق", bill_type_gas: "قبض گاز", bill_type_other: "سایر", section_name_label: "نام بخش:", section_name_placeholder: "نام بخش", total_amount_label: "مبلغ کل:", amount_placeholder: "مبلغ", add_image_label: "افزودن تصویر پرداخت (اختیاری):", add_image_desc: "می‌توانید چند فایل را همزمان انتخاب کنید یا آنها را یکی یکی اضافه کنید.", clear_images_btn: "پاک کردن تصاویر", add_section_btn: "افزودن بخش", added_sections_title: "بخش‌های اضافه شده:", add_bill_image_label: "افزودن تصویر قبض (اختیاری):", separate_calc_title: "محاسبه جداگانه آب و برق مشاع", water_bill_label: "مبلغ کل آب بها", water_bill_placeholder: "مثال: ۴,۰۰۰,۰۰۰", electric_bill_label: "مبلغ کل برق مشاع", electric_bill_placeholder: "مثال: ۱,۰۰۰,۰۰۰", payment_info_title: "مشخصات پرداخت", mobile_label: "شماره موبایل:", mobile_placeholder: "۰۹xxxxxxxxx", card_label: "شماره کارت:", card_placeholder: "xxxx-xxxx-xxxx-xxxx", card_name_label: "به نام:", card_name_placeholder: "نام صاحب کارت", calculation_note_title: "نحوه محاسبه:", calculation_note_water: "مبلغ آب بها بین ۷ واحد (به جز واحد ۲) تقسیم می‌شود.", calculation_note_electric: "مبلغ برق مشاع بین ۸ واحد (شامل واحد ۲) تقسیم می‌شود.", step3_title: "محاسبه و گزارش", summary_title: "خلاصه هزینه‌ها", summary_units: "تعداد واحدها", summary_currency: "واحد پول", table_header_section: "نام بخش", table_header_total: "مبلغ کل", table_header_per_unit: "هر واحد", total_per_unit_label: "مجموع هر واحد:", images_for_section_title: "تصاویر برای:", bill_image_title: "تصویر قبض", final_message_title: "قابل توجه واحدهای محترم", final_message_body: "لطفا مبلغ آب بها و برق مشاع خود را با توجه به صورتحساب، به شماره کارت ذیل واریز و پیامک آن را به شماره موبایل اینجانب ارسال بفرمایید.", calc_water_share_label: "سهم آب بها (۷ واحد):", calc_electric_share_label: "سهم برق مشاع (۸ واحد):", calc_total_share_label: "جمع پرداختی هر واحد (بجز واحد ۲):", payment_card_num: "شماره کارت:", payment_card_name: "به نام:", payment_mobile_num: "شماره موبایل:", thank_you: "با تشکر", back_btn: "بازگشت", print_btn: "چاپ گزارش", alert_invalid_units: "لطفاً تعداد واحدهای معتبر و بزرگتر از صفر وارد کنید.", alert_missing_payment_info: "لطفاً تمامی مشخصات پرداخت را وارد کنید.", alert_no_sections: "لطفاً حداقل یک بخش هزینه اضافه کنید.", alert_invalid_section_info: "لطفاً نام بخش و مبلغ معتبر وارد کنید.", image_count_indicator: "(📷 {count})"
+            }
+        };
+
         // --- APPLICATION STATE ---
         const state = {
+            lang: 'fa',
             billType: 'mono',
             unitCount: 0,
             sections: [],
             currency: 'تومان',
             multiBillImages: [],
-            tempImages: [], // For the current mono-bill section
-            paymentDetails: {
-                mobileNumber: '',
-                cardNumber: '',
-                cardName: ''
-            }
+            tempImages: [],
+            paymentDetails: { mobileNumber: '', cardNumber: '', cardName: '' }
         };
         
         // --- DOM ELEMENTS ---
-        const steps = {
-            step1: document.getElementById('step1'),
-            step2: document.getElementById('step2'),
-            step3: document.getElementById('step3')
-        };
+        const steps = { step1: document.getElementById('step1'), step2: document.getElementById('step2'), step3: document.getElementById('step3') };
         const statusSteps = document.querySelectorAll('.status-step');
         const monoBillSection = document.getElementById('monoBillSection');
         const multiBillSection = document.getElementById('multiBillSection');
@@ -529,71 +531,106 @@
         // --- HELPER FUNCTIONS ---
         const toPersianDigits = (num) => (num ?? '').toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
         const formatNumber = (num) => num.toLocaleString('en-US');
-        const formatCurrency = (amount) => `${toPersianDigits(formatNumber(Math.round(amount)))} ${state.currency}`;
-        const parseFormattedNumber = (str) => parseFloat(str.replace(/,/g, '')) || 0;
+        const localizeNumber = (num) => state.lang === 'fa' ? toPersianDigits(formatNumber(num)) : formatNumber(num);
+        const localizeCurrency = (amount) => `${localizeNumber(Math.round(amount))} ${state.currency}`;
+        const showAlert = (key) => alert(translations[state.lang][key]);
 
-        // --- NAVIGATION & UI ---
+        // --- LANGUAGE & UI ---
+        function setLanguage(lang) {
+            state.lang = lang;
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.innerText = translations[lang][key];
+            });
+            document.querySelectorAll('[data-lang-key-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-lang-key-placeholder');
+                el.placeholder = translations[lang][key];
+            });
+
+            updateCurrencyUI();
+            if(steps.step2.classList.contains('active')) {
+                const titleKey = state.billType === 'mono' ? 'step2_title_mono' : 'step2_title_multi';
+                step2Title.innerText = translations[state.lang][titleKey];
+                renderSectionList();
+            }
+            if(steps.step3.classList.contains('active')) {
+                generateSummary();
+            }
+        }
+
+        function updateCurrencyUI() {
+            const currencyName = state.currency === 'تومان' ? translations[state.lang].currency_toman : translations[state.lang].currency_rial;
+            document.getElementById('currencyIndicator').textContent = currencyName;
+            document.getElementById('waterBillLabel').textContent = `${translations[state.lang].water_bill_label} (${currencyName}):`;
+            document.getElementById('electricityBillLabel').textContent = `${translations[state.lang].electric_bill_label} (${currencyName}):`;
+        }
+
         function showStep(stepId) {
             Object.values(steps).forEach(step => step.classList.remove('active'));
             document.getElementById(stepId).classList.add('active');
             
             const stepIndex = parseInt(stepId.replace('step', ''));
-            statusSteps.forEach((step, index) => {
-                step.classList.toggle('active', index < stepIndex);
-            });
+            statusSteps.forEach((step, index) => step.classList.toggle('active', index < stepIndex));
             
             if (stepId === 'step2') {
                 const isMono = state.billType === 'mono';
-                step2Title.textContent = isMono ? 'افزودن بخش‌های هزینه' : 'جزئیات آب و برق مشاع';
+                const titleKey = isMono ? 'step2_title_mono' : 'step2_title_multi';
+                step2Title.innerText = translations[state.lang][titleKey];
                 monoBillSection.style.display = isMono ? 'block' : 'none';
                 multiBillSection.style.display = isMono ? 'none' : 'block';
             }
         }
-
-        function updateCurrencyUI() {
-            document.getElementById('currencyIndicator').textContent = state.currency;
-            document.getElementById('waterBillLabel').textContent = `مبلغ کل آب بها (${state.currency}):`;
-            document.getElementById('electricityBillLabel').textContent = `مبلغ کل برق مشاع (${state.currency}):`;
-        }
-
+        
         function formatInputAsNumber(e) {
             let input = e.target;
             let value = input.value.replace(/,/g, '');
             if (value && !isNaN(value)) {
                 input.value = formatNumber(parseInt(value, 10));
             } else if (value !== '') {
-                // if user types non-numeric, strip it
                 input.value = value.replace(/\D/g, '');
             }
         }
 
-        // --- IMAGE HANDLING ---
         function handleImageUpload(e, targetArray, previewContainerId) {
             const previewContainer = document.getElementById(previewContainerId);
-            // NOTE: We no longer clear the container or the state array here.
-            
             if (!e.target.files.length) return;
 
             Array.from(e.target.files).forEach(file => {
                 const reader = new FileReader();
                 reader.onload = (event) => {
                     const imgData = event.target.result;
-                    targetArray.push(imgData); // Append to state
-                    
+                    targetArray.push(imgData);
                     const img = document.createElement('img');
                     img.src = imgData;
-                    previewContainer.appendChild(img); // Append to preview
+                    previewContainer.appendChild(img);
                 };
                 reader.readAsDataURL(file);
             });
-
-            // Reset the input value. This is crucial to allow selecting the same file(s) again.
             e.target.value = null;
+        }
+
+        function renderSectionList() {
+            const list = document.getElementById('sectionList');
+            list.innerHTML = '';
+            state.sections.forEach(section => {
+                const listItem = document.createElement('li');
+                let imageIndicator = '';
+                if (section.images.length > 0) {
+                    const count = localizeNumber(section.images.length);
+                    imageIndicator = ' ' + translations[state.lang].image_count_indicator.replace('{count}', count);
+                }
+                listItem.innerHTML = `<strong>${section.name}</strong>: ${localizeCurrency(section.amount)} ${imageIndicator}`;
+                list.prepend(listItem);
+            });
         }
         
         // --- EVENT LISTENERS ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Bill type selection
+            document.getElementById('lang-switcher').addEventListener('change', (e) => setLanguage(e.target.value));
+            
             document.querySelectorAll('.bill-type').forEach(type => {
                 type.addEventListener('click', function() {
                     document.querySelector('.bill-type.selected').classList.remove('selected');
@@ -602,17 +639,15 @@
                 });
             });
 
-            // Currency selection
             document.getElementById('currency').addEventListener('change', (e) => {
-                state.currency = e.target.value;
+                state.currency = e.target.options[e.target.selectedIndex].text;
                 updateCurrencyUI();
             });
 
-            // Navigation
             document.getElementById('nextToStep2').addEventListener('click', () => {
                 const unitCount = parseInt(document.getElementById('unitCount').value);
                 if (isNaN(unitCount) || unitCount <= 0) {
-                    alert('لطفاً تعداد واحدهای معتبر و بزرگتر از صفر وارد کنید.');
+                    showAlert('alert_invalid_units');
                     return;
                 }
                 state.unitCount = unitCount;
@@ -625,11 +660,11 @@
                     state.paymentDetails.cardNumber = document.getElementById('cardNumber').value;
                     state.paymentDetails.cardName = document.getElementById('cardName').value;
                     if (!state.paymentDetails.mobileNumber || !state.paymentDetails.cardNumber || !state.paymentDetails.cardName) {
-                        alert('لطفاً تمامی مشخصات پرداخت را وارد کنید.');
+                        showAlert('alert_missing_payment_info');
                         return;
                     }
                 } else if (state.sections.length === 0) {
-                    alert('لطفاً حداقل یک بخش هزینه اضافه کنید.');
+                    showAlert('alert_no_sections');
                     return;
                 }
                 generateSummary();
@@ -640,26 +675,24 @@
             document.getElementById('backToStep2').addEventListener('click', () => showStep('step2'));
             document.getElementById('printReport').addEventListener('click', () => window.print());
 
-            // Mono-bill section logic
             document.getElementById('addSection').addEventListener('click', () => {
-                const sectionType = document.getElementById('sectionType').value;
-                let name = (sectionType === 'other') 
-                    ? document.getElementById('sectionName').value.trim() 
-                    : sectionType;
-                const amount = parseFormattedNumber(document.getElementById('sectionAmount').value);
-                
-                if (!name || amount <= 0) {
-                    alert('لطفاً نام بخش و مبلغ معتبر وارد کنید.');
-                    return;
+                const sectionSelect = document.getElementById('sectionType');
+                let name = sectionSelect.value;
+                if (name === 'other') {
+                    name = document.getElementById('sectionName').value.trim();
+                } else if (name) {
+                    // Use translated name from option text for non-custom types
+                    name = sectionSelect.options[sectionSelect.selectedIndex].text;
                 }
                 
+                const amount = parseFormattedNumber(document.getElementById('sectionAmount').value);
+                if (!name || amount <= 0) {
+                    showAlert('alert_invalid_section_info');
+                    return;
+                }
                 state.sections.push({ name, amount, images: [...state.tempImages] });
+                renderSectionList();
                 
-                const listItem = document.createElement('li');
-                listItem.innerHTML = `<strong>${name}</strong>: ${formatCurrency(amount)} ${state.tempImages.length > 0 ? `(📷 ${toPersianDigits(state.tempImages.length)})` : ''}`;
-                document.getElementById('sectionList').prepend(listItem);
-                
-                // Clear inputs for next entry
                 document.getElementById('sectionName').value = '';
                 document.getElementById('sectionAmount').value = '';
                 document.getElementById('sectionImage').value = null;
@@ -667,63 +700,50 @@
                 state.tempImages = [];
             });
             
-            // Image Uploads & Clearing
             document.getElementById('sectionImage').addEventListener('change', (e) => handleImageUpload(e, state.tempImages, 'imagePreviewContainer'));
             document.getElementById('billImage').addEventListener('change', (e) => handleImageUpload(e, state.multiBillImages, 'multiBillImagePreviewContainer'));
-
             document.getElementById('clearSectionImages').addEventListener('click', () => {
                 state.tempImages = [];
                 document.getElementById('imagePreviewContainer').innerHTML = '';
                 document.getElementById('sectionImage').value = null;
             });
-
             document.getElementById('clearMultiBillImages').addEventListener('click', () => {
                 state.multiBillImages = [];
                 document.getElementById('multiBillImagePreviewContainer').innerHTML = '';
                 document.getElementById('billImage').value = null;
             });
-
-
-            // Auto-formatting number inputs
             ['sectionAmount', 'waterBill', 'electricityBill'].forEach(id => {
                 document.getElementById(id).addEventListener('input', formatInputAsNumber);
             });
-
-            // Show/hide custom section name
             document.getElementById('sectionType').addEventListener('change', function() {
                 document.getElementById('customSectionGroup').style.display = (this.value === 'other') ? 'block' : 'none';
             });
-
-            // Initial UI setup
-            updateCurrencyUI();
+            setLanguage(state.lang);
         });
 
         // --- SUMMARY GENERATION ---
         function generateSummary() {
             const container = document.getElementById('summaryContainer');
+            const T = translations[state.lang];
             container.innerHTML = '';
             
             if (state.billType === 'mono') {
                 let totalPerUnit = state.sections.reduce((sum, s) => sum + (s.amount / state.unitCount), 0);
                 
                 let tableHTML = `
-                    <h3>خلاصه هزینه‌ها</h3>
-                    <p>تعداد واحدها: <strong>${toPersianDigits(state.unitCount)}</strong> | واحد پول: <strong>${state.currency}</strong></p>
+                    <h3>${T.summary_title}</h3>
+                    <p>${T.summary_units}: <strong>${localizeNumber(state.unitCount)}</strong> | ${T.summary_currency}: <strong>${state.currency}</strong></p>
                     <table class="summary-table">
-                        <thead><tr><th>نام بخش</th><th>مبلغ کل</th><th>هر واحد</th></tr></thead><tbody>`;
-                
+                        <thead><tr><th>${T.table_header_section}</th><th>${T.table_header_total}</th><th>${T.table_header_per_unit}</th></tr></thead><tbody>`;
                 state.sections.forEach(section => {
-                    tableHTML += `<tr><td>${section.name}</td><td class="persian-digit">${formatCurrency(section.amount)}</td><td class="persian-digit">${formatCurrency(section.amount / state.unitCount)}</td></tr>`;
+                    tableHTML += `<tr><td>${section.name}</td><td class="persian-digit">${localizeCurrency(section.amount)}</td><td class="persian-digit">${localizeCurrency(section.amount / state.unitCount)}</td></tr>`;
                 });
-                
-                tableHTML += `</tbody></table><h3>مجموع هر واحد: <span class="unit-total persian-digit">${formatCurrency(totalPerUnit)}</span></h3>`;
+                tableHTML += `</tbody></table><h3>${T.total_per_unit_label} <span class="unit-total persian-digit">${localizeCurrency(totalPerUnit)}</span></h3>`;
                 
                 state.sections.forEach(section => {
                     if (section.images && section.images.length > 0) {
-                        tableHTML += `<div class="bill-image-container"><h3>تصاویر برای: ${section.name}</h3><div class="final-images-wrapper">`;
-                        section.images.forEach(imgData => {
-                            tableHTML += `<img src="${imgData}" alt="تصویر پرداخت">`;
-                        });
+                        tableHTML += `<div class="bill-image-container"><h3>${T.images_for_section_title} ${section.name}</h3><div class="final-images-wrapper">`;
+                        section.images.forEach(imgData => { tableHTML += `<img src="${imgData}" alt="image">`; });
                         tableHTML += `</div></div>`;
                     }
                 });
@@ -732,35 +752,28 @@
             } else { // Multi-bill
                 const waterBill = parseFormattedNumber(document.getElementById('waterBill').value);
                 const electricityBill = parseFormattedNumber(document.getElementById('electricityBill').value);
-
                 const waterShare = Math.round(waterBill / 7);
                 const electricityShare = Math.round(electricityBill / 8);
                 const totalCombinedShare = waterShare + electricityShare;
                 
                 let reportHTML = '';
                 if (state.multiBillImages.length > 0) {
-                    reportHTML += `<div class="bill-image-container"><h3>تصویر قبض</h3><div class="final-images-wrapper">`;
-                    state.multiBillImages.forEach(imgData => {
-                        reportHTML += `<img src="${imgData}" alt="تصویر قبض">`;
-                    });
+                    reportHTML += `<div class="bill-image-container"><h3>${T.bill_image_title}</h3><div class="final-images-wrapper">`;
+                    state.multiBillImages.forEach(imgData => { reportHTML += `<img src="${imgData}" alt="image">`; });
                     reportHTML += `</div></div>`;
                 }
-                
-                reportHTML += `
-                    <div class="final-message">
-                        <h3>قابل توجه واحدهای محترم</h3>
-                        <p>لطفا مبلغ آب بها و برق مشاع خود را با توجه به صورتحساب، به شماره کارت ذیل واریز و پیامک آن را به شماره موبایل اینجانب ارسال بفرمایید.</p>`;
+                reportHTML += `<div class="final-message"><h3>${T.final_message_title}</h3><p>${T.final_message_body}</p>`;
                 
                 if (waterBill > 0 || electricityBill > 0) {
                     reportHTML += `<div class="calculation-container">`;
                     if (waterBill > 0) {
-                        reportHTML += `<div class="calculation-row"><span class="calculation-title">سهم آب بها (۷ واحد):</span><span class="calculation-result persian-digit">${toPersianDigits(formatNumber(waterBill))} ÷ ۷ = ${formatCurrency(waterShare)}</span></div>`;
+                        reportHTML += `<div class="calculation-row"><span class="calculation-title">${T.calc_water_share_label}</span><span class="calculation-result">${localizeNumber(waterBill)} ÷ ۷ = ${localizeCurrency(waterShare)}</span></div>`;
                     }
                     if (electricityBill > 0) {
-                        reportHTML += `<div class="calculation-row"><span class="calculation-title">سهم برق مشاع (۸ واحد):</span><span class="calculation-result persian-digit">${toPersianDigits(formatNumber(electricityBill))} ÷ ۸ = ${formatCurrency(electricityShare)}</span></div>`;
+                        reportHTML += `<div class="calculation-row"><span class="calculation-title">${T.calc_electric_share_label}</span><span class="calculation-result">${localizeNumber(electricityBill)} ÷ ۸ = ${localizeCurrency(electricityShare)}</span></div>`;
                     }
                     if (waterBill > 0 && electricityBill > 0) {
-                        reportHTML += `<div class="calculation-row"><span class="calculation-title">جمع پرداختی هر واحد (بجز واحد ۲):</span><span class="calculation-result persian-digit">${toPersianDigits(formatNumber(waterShare))} + ${toPersianDigits(formatNumber(electricityShare))} = ${formatCurrency(totalCombinedShare)}</span></div>`;
+                        reportHTML += `<div class="calculation-row"><span class="calculation-title">${T.calc_total_share_label}</span><span class="calculation-result">${localizeNumber(waterShare)} + ${localizeNumber(electricityShare)} = ${localizeCurrency(totalCombinedShare)}</span></div>`;
                     }
                     reportHTML += `</div>`;
                 }
@@ -768,11 +781,11 @@
                 const { mobileNumber, cardNumber, cardName } = state.paymentDetails;
                 reportHTML += `
                         <div class="payment-details">
-                            <p><strong>شماره کارت:</strong> <span class="persian-digit" style="font-size: 1.1em; letter-spacing: 2px;">${toPersianDigits(cardNumber)}</span></p>
-                            <p><strong>به نام:</strong> ${cardName}</p>
-                            <p><strong>شماره موبایل:</strong> <span class="persian-digit">${toPersianDigits(mobileNumber)}</span></p>
+                            <p><strong>${T.payment_card_num}</strong> <span style="font-size: 1.1em; letter-spacing: 2px;">${localizeNumber(cardNumber)}</span></p>
+                            <p><strong>${T.payment_card_name}</strong> ${cardName}</p>
+                            <p><strong>${T.payment_mobile_num}</strong> <span class="persian-digit">${localizeNumber(mobileNumber)}</span></p>
                         </div>
-                        <p style="text-align: center; margin-top: 20px;">با تشکر</p>
+                        <p style="text-align: center; margin-top: 20px;">${T.thank_you}</p>
                     </div>`;
                 
                 container.innerHTML = reportHTML;
