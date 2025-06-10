@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سیستم تقسیم هزینه‌های ساختمان</title>
     <style>
+        /* General Styles */
         * {
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -32,6 +33,7 @@
             text-align: center;
         }
         
+        /* Step Navigation */
         .step {
             display: none;
         }
@@ -40,6 +42,7 @@
             display: block;
         }
         
+        /* Form Elements */
         .form-group {
             margin-bottom: 20px;
         }
@@ -88,7 +91,16 @@
         .btn-container button {
             flex: 1;
         }
+
+        .print-btn {
+            background-color: #27ae60;
+        }
         
+        .print-btn:hover {
+            background-color: #219653;
+        }
+        
+        /* Summary & Calculation Styles */
         .summary-table {
             width: 100%;
             border-collapse: collapse;
@@ -109,80 +121,12 @@
             font-weight: bold;
             color: #27ae60;
         }
-        
-        .print-btn {
-            background-color: #27ae60;
-        }
-        
-        .print-btn:hover {
-            background-color: #219653;
-        }
-        
-        @media print {
-            .no-print {
-                display: none;
-            }
-            
-            .status-bar {
-                display: none !important;
-            }
-            
-            body {
-                padding: 0;
-                background: white;
-                zoom: 90%;
-                width: 100%;
-            }
-            
-            .container {
-                box-shadow: none;
-                padding: 10px;
-                margin: 0;
-                width: 100%;
-                max-width: 100%;
-            }
-            
-            h1 {
-                font-size: 24px;
-                margin-top: 5px;
-                margin-bottom: 15px;
-            }
-            
-            h2 {
-                font-size: 20px;
-            }
-            
-            .calculation-container, .payment-details, .final-message {
-                page-break-inside: avoid;
-            }
-            
-            .bill-image-container {
-                max-height: 250px !important;
-            }
-            
-            .btn-container {
-                display: none;
-            }
-        }
-        
-        .payment-details {
-            background: #e8f4fd;
-            border-left: 4px solid #3498db;
+
+        .calculation-container {
+            margin: 20px 0;
             padding: 15px;
-            margin: 25px 0;
-            border-radius: 0 5px 5px 0;
-        }
-        
-        .payment-details p {
-            margin: 8px 0;
-        }
-        
-        .final-message {
-            background-color: #f0f9f0;
-            border: 1px solid #c3e6cb;
-            border-radius: 5px;
-            padding: 20px;
-            margin: 25px 0;
+            background-color: #f8f9fa;
+            border-radius: 8px;
         }
         
         .calculation-row {
@@ -209,11 +153,25 @@
             text-align: left;
         }
         
-        .highlight {
-            background-color: #fff8e1;
-            padding: 3px 6px;
-            border-radius: 3px;
-            font-weight: bold;
+        /* UI Components */
+        .payment-details {
+            background: #e8f4fd;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 25px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .payment-details p {
+            margin: 8px 0;
+        }
+        
+        .final-message {
+            background-color: #f0f9f0;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 25px 0;
         }
         
         .status-bar {
@@ -297,6 +255,7 @@
             border-radius: 0 5px 5px 0;
         }
         
+        /* Image Styles */
         .image-preview {
             max-width: 100%;
             max-height: 200px;
@@ -314,6 +273,7 @@
             background-color: #f8f9fa;
             border-radius: 8px;
             border: 1px solid #eee;
+            page-break-inside: avoid; /* Prevents container from splitting across pages */
         }
         
         .bill-image-container img {
@@ -323,20 +283,59 @@
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
         
-        .calculation-container {
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-        }
-        
         .persian-digit {
             font-family: Tahoma, sans-serif;
+        }
+
+        /* --- PRINT STYLES --- */
+        @media print {
+            .no-print, .btn-container, .status-bar {
+                display: none !important;
+            }
+            
+            body {
+                padding: 0;
+                background: white;
+                zoom: 90%;
+                width: 100%;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 10px;
+                margin: 0;
+                width: 100%;
+                max-width: 100%;
+            }
+            
+            h1 {
+                font-size: 24px;
+                margin-top: 5px;
+                margin-bottom: 15px;
+            }
+            
+            h2 {
+                font-size: 20px;
+            }
+            
+            .calculation-container, .payment-details, .final-message {
+                page-break-inside: avoid;
+            }
+
+            /* * --- FIX ---
+             * The problem was that the container's height was limited, but not the image's.
+             * This new rule directly limits the image's height during printing, 
+             * ensuring it fits within its container and doesn't overlap other content.
+             */
+            .bill-image-container img {
+                max-height: 250px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Status Bar -->
         <div class="status-bar no-print">
             <div class="status-step active">۱</div>
             <div class="status-step">۲</div>
@@ -368,7 +367,7 @@
             </div>
             
             <div class="info-box">
-                <p><strong>توجه:</strong> برای صورت حساب چندگانه، فقط نیاز به وارد کردن اطلاعات آب و برق مشاع دارید</p>
+                <p><strong>توجه:</strong> برای صورت حساب چندگانه، فقط نیاز به وارد کردن اطلاعات آب و برق مشاع دارید.</p>
             </div>
             
             <button id="nextToStep2">ادامه</button>
@@ -378,7 +377,7 @@
         <div id="step2" class="step">
             <h2 id="step2Title" class="no-print">جزئیات هزینه‌ها</h2>
             
-            <!-- Mono-bill section (default hidden) -->
+            <!-- Mono-bill section -->
             <div id="monoBillSection" style="display: none;">
                 <div class="form-group">
                     <label for="sectionType">نوع قبض:</label>
@@ -453,8 +452,8 @@
                 
                 <div class="info-box">
                     <p><strong>نحوه محاسبه:</strong></p>
-                    <p>مبلغ آب بها بین ۷ واحد (به جز واحد ۲) تقسیم می‌شود</p>
-                    <p>مبلغ برق مشاع بین ۸ واحد (شامل واحد ۲) تقسیم می‌شود</p>
+                    <p>مبلغ آب بها بین ۷ واحد (به جز واحد ۲) تقسیم می‌شود.</p>
+                    <p>مبلغ برق مشاع بین ۸ واحد (شامل واحد ۲) تقسیم می‌شود.</p>
                 </div>
             </div>
             
@@ -504,23 +503,14 @@
         
         // Navigation functions
         function showStep(stepId) {
-            // Update step visibility
-            Object.values(steps).forEach(step => {
-                step.classList.remove('active');
-            });
+            Object.values(steps).forEach(step => step.classList.remove('active'));
             document.getElementById(stepId).classList.add('active');
             
-            // Update status indicators
             const stepIndex = parseInt(stepId.replace('step', ''));
             statusSteps.forEach((step, index) => {
-                if (index < stepIndex) {
-                    step.classList.add('active');
-                } else {
-                    step.classList.remove('active');
-                }
+                step.classList.toggle('active', index < stepIndex);
             });
             
-            // Update step2 based on bill type
             if (stepId === 'step2') {
                 if (state.billType === 'mono') {
                     step2Title.textContent = 'افزودن بخش‌های هزینه';
@@ -537,334 +527,175 @@
         // Bill type selection
         document.querySelectorAll('.bill-type').forEach(type => {
             type.addEventListener('click', function() {
-                document.querySelectorAll('.bill-type').forEach(t => {
-                    t.classList.remove('selected');
-                });
+                document.querySelector('.bill-type.selected').classList.remove('selected');
                 this.classList.add('selected');
                 state.billType = this.dataset.type;
             });
         });
         
-        // Step 1: Set unit count
+        // Step 1 -> Step 2
         document.getElementById('nextToStep2').addEventListener('click', () => {
             const unitCount = parseInt(document.getElementById('unitCount').value);
-            if (isNaN(unitCount)) {
-                alert('لطفاً تعداد واحدهای معتبر وارد کنید');
+            if (isNaN(unitCount) || unitCount <= 0) {
+                alert('لطفاً تعداد واحدهای معتبر و بزرگتر از صفر وارد کنید');
                 return;
             }
-            
-            if (unitCount <= 0) {
-                alert('تعداد واحدها باید بیشتر از صفر باشد');
-                return;
-            }
-            
             state.unitCount = unitCount;
             showStep('step2');
         });
         
         // Step 2: Add sections for mono-bill
         document.getElementById('addSection').addEventListener('click', () => {
-            let name = document.getElementById('sectionName').value.trim();
             const sectionType = document.getElementById('sectionType').value;
+            let name = (sectionType === 'other') 
+                ? document.getElementById('sectionName').value.trim() 
+                : sectionType;
             
-            // If custom section is not shown, use the selected type
-            if (sectionType !== 'other' && sectionType) {
-                name = sectionType;
-            }
+            const amount = parseFloat(document.getElementById('sectionAmount').value.replace(/,/g, ''));
             
-            const amountInput = document.getElementById('sectionAmount').value;
-            const amount = parseFloat(amountInput.replace(/,/g, ''));
-            
-            if (!name) {
-                alert('لطفاً نام بخش را وارد کنید');
+            if (!name || isNaN(amount) || amount <= 0) {
+                alert('لطفاً نام بخش و مبلغ معتبر وارد کنید');
                 return;
             }
             
-            if (isNaN(amount)) {
-                alert('لطفاً مبلغ معتبر وارد کنید');
-                return;
-            }
+            state.sections.push({ name, amount, image: state.currentImage });
             
-            if (amount <= 0) {
-                alert('مبلغ باید بیشتر از صفر باشد');
-                return;
-            }
-            
-            // Add section to state WITH image
-            state.sections.push({
-                name,
-                amount,
-                image: state.currentImage
-            });
-            
-            // Add to UI list with image indicator
             const listItem = document.createElement('li');
-            listItem.className = 'section-item';
-            listItem.innerHTML = `
-                <div>
-                    <strong>${name}</strong>: ${formatCurrency(amount)}
-                    ${state.currentImage ? '<span style="margin-right:10px">📷</span>' : ''}
-                </div>
-            `;
+            listItem.innerHTML = `<strong>${name}</strong>: ${formatCurrency(amount)} ${state.currentImage ? '📷' : ''}`;
             document.getElementById('sectionList').appendChild(listItem);
             
-            // Clear inputs but KEEP image preview
+            // Clear inputs, reset current image for next section
             document.getElementById('sectionName').value = '';
             document.getElementById('sectionAmount').value = '';
             document.getElementById('sectionImage').value = '';
-            
-            // Reset current image for next section
-            state.currentImage = null;
             document.getElementById('imagePreview').style.display = 'none';
+            state.currentImage = null;
         });
         
-        // Image preview for mono-bill
-        document.getElementById('sectionImage')?.addEventListener('change', function(e) {
-            const file = e.target.files[0];
+        // Generic image preview handler
+        function handleImagePreview(file, imgElementId, stateProperty) {
             if (!file) return;
-            
             const reader = new FileReader();
             reader.onload = function(event) {
-                const img = document.getElementById('imagePreview');
+                const img = document.getElementById(imgElementId);
                 img.src = event.target.result;
                 img.style.display = 'block';
-                state.currentImage = event.target.result;
+                state[stateProperty] = event.target.result;
             };
             reader.readAsDataURL(file);
-        });
-        
-        // Image preview for multi-bill
-        document.getElementById('billImage')?.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const img = document.getElementById('multiBillImagePreview');
-                img.src = event.target.result;
-                img.style.display = 'block';
-                state.multiBillImage = event.target.result;
-            };
-            reader.readAsDataURL(file);
-        });
-        
-        // Step 2 navigation
-        document.getElementById('backToStep1').addEventListener('click', () => showStep('step1'));
+        }
+
+        document.getElementById('sectionImage')?.addEventListener('change', (e) => handleImagePreview(e.target.files[0], 'imagePreview', 'currentImage'));
+        document.getElementById('billImage')?.addEventListener('change', (e) => handleImagePreview(e.target.files[0], 'multiBillImagePreview', 'multiBillImage'));
+
+        // Step 2 -> Step 3
         document.getElementById('nextToStep3').addEventListener('click', () => {
-            // For multi-bill mode, capture payment information
             if (state.billType === 'multi') {
                 state.mobileNumber = document.getElementById('mobileNumber').value;
                 state.cardNumber = document.getElementById('cardNumber').value;
                 state.cardName = document.getElementById('cardName').value;
-                
-                // Validate required fields for multi-bill
                 if (!state.mobileNumber || !state.cardNumber || !state.cardName) {
                     alert('لطفاً تمامی مشخصات پرداخت را وارد کنید');
                     return;
                 }
-            }
-            // For mono-bill mode, validate at least one section
-            else if (state.sections.length === 0) {
-                alert('لطفاً حداقل یک بخش اضافه کنید');
+            } else if (state.sections.length === 0) {
+                alert('لطفاً حداقل یک بخش هزینه اضافه کنید');
                 return;
             }
-            
             generateSummary();
             showStep('step3');
         });
         
-        // Step 3: Generate summary
-        function generateSummary() {
-            const unitCount = parseInt(document.getElementById('unitCount').value) || state.unitCount;
-            state.unitCount = unitCount;
+        // Navigation buttons
+        document.getElementById('backToStep1').addEventListener('click', () => showStep('step1'));
+        document.getElementById('backToStep2').addEventListener('click', () => showStep('step2'));
+        document.getElementById('printReport').addEventListener('click', () => window.print());
 
+        // Step 3: Generate summary report
+        function generateSummary() {
             const container = document.getElementById('summaryContainer');
             container.innerHTML = '';
             
-            // For mono-bill: show standard summary
             if (state.billType === 'mono') {
-                let totalAmount = 0;
-                let totalPerUnit = 0;
-                
+                let totalPerUnit = state.sections.reduce((sum, s) => sum + (s.amount / state.unitCount), 0);
+                let hasImages = state.sections.some(s => s.image);
+
                 let tableHTML = `
                     <h3>خلاصه هزینه‌ها</h3>
                     <p>تعداد واحدها: <strong>${toPersianDigits(state.unitCount)}</strong></p>
-                    <p>نوع صورت حساب: <strong>تکی</strong></p>
                     <table class="summary-table">
-                        <thead>
-                            <tr>
-                                <th>نام بخش</th>
-                                <th>مبلغ کل (${state.currency})</th>
-                                <th>هر واحد (${state.currency})</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-                
-                let hasImages = false;
+                        <thead><tr><th>نام بخش</th><th>مبلغ کل</th><th>هر واحد</th></tr></thead><tbody>`;
                 
                 state.sections.forEach(section => {
-                    const perUnit = section.amount / state.unitCount;
-                    totalPerUnit += perUnit;
-                    
-                    tableHTML += `
-                        <tr>
-                            <td>${section.name}</td>
-                            <td class="persian-digit">${formatCurrency(section.amount)}</td>
-                            <td class="persian-digit">${formatCurrency(perUnit)}</td>
-                        </tr>
-                    `;
-                    
-                    if (section.image) hasImages = true;
+                    tableHTML += `<tr><td>${section.name}</td><td class="persian-digit">${formatCurrency(section.amount)}</td><td class="persian-digit">${formatCurrency(section.amount / state.unitCount)}</td></tr>`;
                 });
                 
-                tableHTML += `
-                        </tbody>
-                    </table>
-                    <h3>مجموع هر واحد: <span class="unit-total persian-digit">${formatCurrency(totalPerUnit)}</span></h3>
-                `;
+                tableHTML += `</tbody></table><h3>مجموع هر واحد: <span class="unit-total persian-digit">${formatCurrency(totalPerUnit)}</span></h3>`;
                 
-                // Add images if any
                 if (hasImages) {
-                    tableHTML += `<h3>تصاویر پرداخت:</h3><div style="page-break-inside: avoid;">`;
+                    tableHTML += `<h3>تصاویر پرداخت:</h3>`;
                     state.sections.forEach(section => {
                         if (section.image) {
-                            tableHTML += `
-                                <div style="margin-bottom: 20px;">
-                                    <div><strong>${section.name}</strong></div>
-                                    <img src="${section.image}" style="max-width: 100%; max-height: 300px; display: block; margin-top: 10px;">
-                                </div>
-                            `;
+                            tableHTML += `<div style="page-break-inside: avoid; margin-bottom: 20px;"><strong>${section.name}</strong><img src="${section.image}" style="max-width: 100%; max-height: 300px; display: block; margin-top: 10px;"></div>`;
                         }
                     });
-                    tableHTML += `</div>`;
                 }
-                
                 container.innerHTML = tableHTML;
-            }
-            // For multi-bill: show water/electricity calculation
-            else {
-                const waterBillInputVal = parseInt(document.getElementById('waterBill').value) || 0;
-                const electricityBillInputVal = parseInt(document.getElementById('electricityBill').value) || 0;
 
-                const waterShare = waterBillInputVal > 0 ? Math.round(waterBillInputVal / 7) : 0;
-                const electricityShare = electricityBillInputVal > 0 ? Math.round(electricityBillInputVal / 8) : 0;
+            } else { // Multi-bill
+                const waterBill = parseInt(document.getElementById('waterBill').value) || 0;
+                const electricityBill = parseInt(document.getElementById('electricityBill').value) || 0;
+
+                const waterShare = Math.round(waterBill / 7);
+                const electricityShare = Math.round(electricityBill / 8);
                 const totalCombinedShare = waterShare + electricityShare;
-
-                // Final message to residents
-                let tableHTML = '';
                 
-                // Add bill image at the top
+                let reportHTML = '';
                 if (state.multiBillImage) {
-                    tableHTML += `
-                        <div class="bill-image-container">
-                            <h3>تصویر قبض</h3>
-                            <img src="${state.multiBillImage}" alt="تصویر قبض">
-                        </div>
-                    `;
+                    reportHTML += `<div class="bill-image-container"><h3>تصویر قبض</h3><img src="${state.multiBillImage}" alt="تصویر قبض"></div>`;
                 }
                 
-                tableHTML += `
+                reportHTML += `
                     <div class="final-message">
                         <h3>قابل توجه واحدهای محترم</h3>
-                        <p>لطفا مبلغ آب بها و برق مشاع خود را با توجه به صورتحساب، به شماره کارت ذیل واریز و پیامک آن را به شماره موبایل اینجانب ارسال بفرمایید.</p>
-                `;
+                        <p>لطفا مبلغ آب بها و برق مشاع خود را با توجه به صورتحساب، به شماره کارت ذیل واریز و پیامک آن را به شماره موبایل اینجانب ارسال بفرمایید.</p>`;
                 
-                if (waterBillInputVal > 0 || electricityBillInputVal > 0) {
-                    tableHTML += `<div class="calculation-container">`;
-                    
-                    if (waterBillInputVal > 0) {
-                        tableHTML += `
-                            <div class="calculation-row">
-                                <span class="calculation-title">سهم آب بها به جز واحد ۲:</span>
-                                <span class="calculation-result persian-digit">
-                                    ${toPersianDigits(waterBillInputVal)} ÷ ۷ = ${toPersianDigits(waterShare)} ریال
-                                </span>
-                            </div>
-                        `;
+                if (waterBill > 0 || electricityBill > 0) {
+                    reportHTML += `<div class="calculation-container">`;
+                    if (waterBill > 0) {
+                        reportHTML += `<div class="calculation-row"><span class="calculation-title">سهم آب بها (۷ واحد):</span><span class="calculation-result persian-digit">${toPersianDigits(waterBill)} ÷ ۷ = ${toPersianDigits(waterShare)} ریال</span></div>`;
                     }
-                    
-                    if (electricityBillInputVal > 0) {
-                        tableHTML += `
-                            <div class="calculation-row">
-                                <span class="calculation-title">برق مشاع و سهم واحد ۲:</span>
-                                <span class="calculation-result persian-digit">
-                                    ${toPersianDigits(electricityBillInputVal)} ÷ ۸ = ${toPersianDigits(electricityShare)} ریال
-                                </span>
-                            </div>
-                        `;
+                    if (electricityBill > 0) {
+                        reportHTML += `<div class="calculation-row"><span class="calculation-title">سهم برق مشاع (۸ واحد):</span><span class="calculation-result persian-digit">${toPersianDigits(electricityBill)} ÷ ۸ = ${toPersianDigits(electricityShare)} ریال</span></div>`;
                     }
-                    
-                    if (waterBillInputVal > 0 && electricityBillInputVal > 0) {
-                        tableHTML += `
-                            <div class="calculation-row">
-                                <span class="calculation-title">جمع پرداختی ۷ واحد برای آب بها و برق مشاع:</span>
-                                <span class="calculation-result persian-digit">
-                                    ${toPersianDigits(waterShare)} + ${toPersianDigits(electricityShare)} = ${toPersianDigits(totalCombinedShare)} ریال
-                                </span>
-                            </div>
-                        `;
+                    if (waterBill > 0 && electricityBill > 0) {
+                        reportHTML += `<div class="calculation-row"><span class="calculation-title">جمع پرداختی هر واحد (بجز واحد ۲):</span><span class="calculation-result persian-digit">${toPersianDigits(waterShare)} + ${toPersianDigits(electricityShare)} = ${toPersianDigits(totalCombinedShare)} ریال</span></div>`;
                     }
-                    
-                    tableHTML += `</div>`;
+                    reportHTML += `</div>`;
                 }
                 
-                // Payment details
-                tableHTML += `
-                    <div class="payment-details">
-                        <p><strong>شماره کارت:</strong> ${state.cardNumber}</p>
-                        <p><strong>به نام:</strong> ${state.cardName}</p>
-                        <p><strong>شماره موبایل:</strong> ${toPersianDigits(state.mobileNumber)}</p>
-                    </div>
-                    <p style="text-align: center; margin-top: 20px;">با تشکر</p>
-                </div>
-                `;
+                reportHTML += `
+                        <div class="payment-details">
+                            <p><strong>شماره کارت:</strong> <span class="persian-digit">${state.cardNumber}</span></p>
+                            <p><strong>به نام:</strong> ${state.cardName}</p>
+                            <p><strong>شماره موبایل:</strong> <span class="persian-digit">${toPersianDigits(state.mobileNumber)}</span></p>
+                        </div>
+                        <p style="text-align: center; margin-top: 20px;">با تشکر</p>
+                    </div>`;
                 
-                container.innerHTML = tableHTML;
+                container.innerHTML = reportHTML;
             }
         }
         
-        // Step 3 navigation
-        document.getElementById('backToStep2').addEventListener('click', () => showStep('step2'));
-        document.getElementById('printReport').addEventListener('click', () => window.print());
-        
-        // Section type selection for mono-bill
+        // Show/hide custom section name input
         document.getElementById('sectionType')?.addEventListener('change', function() {
-            const customGroup = document.getElementById('customSectionGroup');
-            if (this.value === 'other') {
-                customGroup.style.display = 'block';
-            } else {
-                customGroup.style.display = 'none';
-                document.getElementById('sectionName').value = this.value;
-            }
+            document.getElementById('customSectionGroup').style.display = (this.value === 'other') ? 'block' : 'none';
         });
-        
-        // Initialize after DOM load
-        document.addEventListener('DOMContentLoaded', () => {
-            // Enter key navigation
-            document.getElementById('unitCount').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') document.getElementById('nextToStep2').click();
-            });
-            
-            // Initialize status bar
-            statusSteps[0].classList.add('active');
-        });
-        
-        // Convert English digits to Persian
-        function toPersianDigits(number) {
-            if (number === undefined || number === null) return '';
-            return number.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
-        }
-        
-        // Format numbers with thousands separator
-        function formatNumber(num) {
-            return num.toLocaleString('fa-IR');
-        }
-        
-        // Format currency with proper symbol
-        function formatCurrency(amount) {
-            return `${toPersianDigits(formatNumber(Math.round(amount)))} ${state.currency}`;
-        }
+
+        // Helper functions
+        const toPersianDigits = (num) => (num ?? '').toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+        const formatNumber = (num) => num.toLocaleString('en-US'); // Use en-US for comma separation, then convert digits
+        const formatCurrency = (amount) => `${toPersianDigits(formatNumber(Math.round(amount)))} ${state.currency}`;
     </script>
 </body>
 </html>
